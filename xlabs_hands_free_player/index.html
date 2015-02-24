@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title>Hands Free Video Player</title>
+			<link rel="stylesheet" href="./style.css">
+      <style type="text/css">
+				body, html
+				{
+        	margin: 0; padding: 0; height: 100%; overflow: hidden;
+        }
+			</style>
+    </head>
+    <body>
+	    	<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+	    	<div id="player"></div>
+
+				<div id="top" style='display:none; position:absolute; left:0; top:0; width:100%; overflow:hidden; background-color:#ffffff; z-index:1;'>
+					<center>
+						<font color="white">Youtube video address:</font>
+						<input type="text" id="youtube_addr_txt" style='width:30%' >
+						<button type='button' class='xlInputButton' style='display:inline; margin: 12px 12px 12px 12px;' id='youtube_addr_btn' alt='go' onclick='loadYoutubeVideo();'>Load</button>
+					</center>
+				</div>
+
+				<div id="descr" style='display:block; position:absolute; left:0; top:0; width:100%; height:100%; overflow:hidden; background-color:#ffffff; z-index:0;'>
+					<div id='xLabsDivOuter' style='position:fixed; left:0; top:30%; width:100%;'>
+						<center>
+							<span id='xLabsDivText' style='font-size:45px; vertical-align:middle; font-family:Arial; display:inline; '>
+								Control video playback with motion capture (<a href="about.html">how?</a>)
+							</span>
+						</center>
+					</div>
+				</div>
+				
+
+				<div id="not_chrome" style='display:none; position:absolute; left:0; top:0; width:100%; height:100%; overflow:hidden; background-color:#ffffff; z-index:0;'>
+					<div id='xLabsDivOuter' style='position:fixed; left:0; top:50%; width:100%;'>
+						<center>
+							<img id='xLabsImg' src='./resources/final_nogaze_small.png' style='vertical-align:middle;'/>
+							<span id='xLabsDivText' style='font-size:30px; vertical-align:middle; font-family:Arial; display:inline; '>
+								You need to use the <a href='https://chrome.google.com/' alt='Download link' style='font-size:30px; font-family:Arial;  display:inline; '>Google Chrome</a> web-browser.
+							</span>
+						</center>
+					</div>
+				</div>
+
+				<div id="no_plugin" style="display:none">
+					<div id='xLabsDivOuter' style='position:fixed; left:0; top:50%; width:100%;'>
+						<center>
+							<img id='xLabsImg' src='./resources/final_nogaze_small.png' style='vertical-align:middle;'/>
+							<span id='xLabsDivText' style='font-size:30px; vertical-align:middle; font-family:Arial; display:inline; '>
+								You need to install the <a href='' alt='Download link' style='font-size:30px; font-family:Arial;  display:inline; '>xLabs chrome extension</a> to view this page.
+    					</span>
+						</center>
+					</div>
+				</div>
+
+				<div id="landing" style="display:none">
+					<div id='xLabsDivOuter' style='position:fixed; left:0; top:45%; width:100%;'>
+						<center>
+							<!--<img id='xLabsImg' src='./final_nogaze_small.png' style='vertical-align:middle;'/><br/>-->
+							<span id='xLabsDivText' style='font-size:30px; vertical-align:middle; font-family:Arial; display:inline; '>
+								Enter any <a href="www.youtube.com">YouTube</a> URL into the box above and click Load.<br/>
+								Tilt your head left to rewind, right to fast-forward.<br/>
+								Video pauses when you aren't facing the screen.<br/>
+							</span>
+						</center>
+					</div>
+				</div>
+
+				<div id="playerButton" style="display:none">
+					<div id='xLabsDivOuter' style='position:fixed; left:0; top:40%; width:100%;'>
+						<center>
+							<img id='playerButtonImg' src='' style='vertical-align:middle; width:10%; opacity:0.4;'/>
+						</center>
+					</div>
+				</div>
+  		<script type="text/javascript" src="../api/xlabs.js"></script>
+  		<script type="text/javascript" src="../useful/util.js"></script>
+  		<script type="text/javascript" src="../useful/errors.js"></script>
+			<script type="text/javascript" src="player.js">
+    </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+

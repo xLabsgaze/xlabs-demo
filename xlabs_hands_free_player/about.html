@@ -1,0 +1,118 @@
+<html>
+<head>
+    <title>Handsfree Video Player</title>
+    <link rel="stylesheet" type="text/css" href="landingPage/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="landingPage/libs/bootstrap/css/bootstrap.min.css" />
+    <script src="landingPage/libs/jquery/js/jquery-1.9.1.js"></script>
+    <script src="landingPage/js/index.js"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">Handsfree video player</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://xlabsgaze.com/">Download Xlabs</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<div id="jum" class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h2>Touch is great, Handsfree is better.</h2>
+								<br/>
+                <p><b>Handsfree video player</b> allows you to play, pause, rewind and fast-foward any youtube video.</p>
+                <p>It is built on top of the <a href="http://xlabsgaze.com">xLabs gaze SDK</a>, which has the capability to track head pose and eye gaze using ordinary webcams.</p>
+                <p>In order to use the handsfree video player, you need to <a href="http://xlabsgaze.com/registration">install xLabs first </a>.</p>
+            </div>
+            <div class="col-md-5">
+                <br/>
+                <br/>
+                <img src="resources/handsfree-thumb.png" width="100%"></image>
+                <p></p>
+                <br/>
+                <div style="text-align: right" id="fb-root">
+										<!--
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-hashtags="xLabs">Tweet</a>
+                    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                    <script src="https://apis.google.com/js/platform.js" async defer></script>
+                    <a class="g-plus" data-action="share" data-annotation="bubble"> </a>
+										-->
+                    <a class="btn btn-primary btn-lg xlabTest" role="button">xLabs Test</a>
+										&nbsp;&nbsp;&nbsp;
+                    <a class="btn btn-primary btn-lg" role="button" id="play">Open Player &raquo;</a>
+										<script type="text/javascript">
+											$('play').onclick = function() { window.open( 'index.html' ) };
+										</script>
+										<br/>
+                    <!--<a class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-width="100"></a>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Why handsfree?</h3>
+            <p>Touch is greate, Handsfree is better. </p>
+						<p>
+							Ever tried eating pizza and control a video player? Messy.
+							Handsfree video player introduces an often overlooked control modality: head gestures. It's intuitive and unobtrusive. Give it a shot!
+						</p>
+        </div>
+        <div class="col-md-4">
+            <h3>What is xLabs?</h3>
+            <p>
+							<a href="http://xlabsgaze.com/">xLabs</a> a SDK that tracks head pose and eye gaze using only ordinary webcams. No other hardware is required.
+							You can find some more apps built on top of the SKD <a href="http://xlabsgaze.com/showcase">here</a></p>
+            <p><a class="btn btn-default" href="http://xlabsgaze.com/" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h3>How to control video play back?</h3>
+            <p>
+                After installing the <a href="http://xlabsgaze.com/">xLabs</a> and <a href="http://xlabsgaze.com/extension/">browser extension</a>, <b>restart</b> your browser.
+								You can <a href="#" class="xlabTest">click here</a> to check if you have installed it correctly.
+            </p>
+            <p>
+								Open the <a href="http://xlabsgaze.com/apps/handsfree/videoplayer.html">player</a>, paste the YouTube video address into the box and click Load.<br/>
+            </p>
+						<p>
+								Tilt your head slowly <b>left</b> to rewind, <b>right</b> to fast-forward. Playback <b>stops</b> when you are not facing the screen.
+						</p>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+<hr/>
+<!--
+<div style="text-align: center">
+    <div class="inner">
+        <p>Demo for playing HexGL with xLabs, by <a href="https://www.facebook.com/profile.php?id=100005320831199">@Yikai Gong</a>.</p>
+    </div>
+</div>
+-->
+
+<a id="fb-root"></a>
+<script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<script src="landingPage/libs/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
