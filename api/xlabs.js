@@ -7,11 +7,16 @@ var xLabs = {
   config : null,
   callbackReady : null,
   callbackState : null,
-  callbackIdUrl : null,
+  callbackIdPath : null,
+  apiReady : false,
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Core API
   ///////////////////////////////////////////////////////////////////////////////////////////////////
+  isApiReady : function() {
+    return !!xLabs.apiReady;
+  },
+
   getConfig : function( path ) {
     var value = xLabs.getObjectProperty( xLabs.config, path );
     //console.log( "getConfig( "+path+" = "+ value + " )" );
@@ -208,6 +213,13 @@ var xLabs = {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Setup
   ///////////////////////////////////////////////////////////////////////////////////////////////////
+  onApiReady : function() {
+    xLabs.apiReady = true;
+    if( xLabs.callbackReady != null ) {
+      xLabs.callbackReady();
+    }
+  },
+
   onApiState : function( config ) {
     xLabs.config = config;
     if( xLabs.callbackState != null ) {
@@ -215,28 +227,37 @@ var xLabs = {
     }
   },
 
-  onApiReady : function() {
-    console.log( "xLabs API is ready." );
-    if( xLabs.callbackReady != null ) {
-      xLabs.callbackReady();
+  onApiIdPath : function( detail ) {
+    if( xLabs.callbackIdPath != null ) {
+      xLabs.callbackIdPath( detail.id, detail.path );
     }
   },
 
-  setup : function( callbackReady, callbackState ) {
+  setup : function( callbackReady, callbackState, callbackIdPath ) {
     xLabs.callbackReady = callbackReady;
     xLabs.callbackState = callbackState;
+    xLabs.callbackIdPath = callbackIdPath;
 
-    // add event listeners
-    document.addEventListener( "xLabsApiReady", function() {
-      xLabs.onApiReady();
-    } );
-
-    document.addEventListener( "xLabsApiState", function( event ) {
-      xLabs.onApiState( event.detail );
-    } );
+    if( !!xLabs.apiReady ) {
+      xLabs.callbackReady();
+    }
   }
 
 };
+
+
+// add event listeners
+document.addEventListener( "xLabsApiReady", function() {
+  xLabs.onApiReady();
+} );
+
+document.addEventListener( "xLabsApiState", function( event ) {
+  xLabs.onApiState( event.detail );
+} );
+
+document.addEventListener( "xLabsApiIdPath", function( event ) {
+  xLabs.onApiIdPath( event.detail );
+} );
 
 // Usage: xLabs.setup( myCallbackFnReady, myCallbackFnState );
 
