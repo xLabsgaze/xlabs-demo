@@ -7,6 +7,7 @@ var xLabs = {
   config : null,
   callbackReady : null,
   callbackState : null,
+  callbackIdPath : null,
   apiReady : false,
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,9 +227,17 @@ var xLabs = {
     }
   },
 
-  setup : function( callbackReady, callbackState ) {
+  onApiIdPath : function( detail ) {
+    if( xLabs.callbackIdPath != null ) {
+      xLabs.callbackIdPath( detail.id, detail.path );
+    }
+  },
+
+  setup : function( callbackReady, callbackState, callbackIdPath ) {
     xLabs.callbackReady = callbackReady;
     xLabs.callbackState = callbackState;
+    xLabs.callbackIdPath = callbackIdPath;
+
     if( !!xLabs.apiReady ) {
       xLabs.callbackReady();
     }
@@ -246,6 +255,9 @@ document.addEventListener( "xLabsApiState", function( event ) {
   xLabs.onApiState( event.detail );
 } );
 
+document.addEventListener( "xLabsApiIdPath", function( event ) {
+  xLabs.onApiIdPath( event.detail );
+} );
 
 // Usage: xLabs.setup( myCallbackFnReady, myCallbackFnState );
 
