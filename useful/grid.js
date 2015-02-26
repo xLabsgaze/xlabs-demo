@@ -5,17 +5,109 @@
 ///////////////////////////////////////////////////////////////////////////////
 var Grid = {
 
+  id : "grid",
   url : null,
-  width : 4,
+  width : 3,
   height : 3,
+
+  timer : null,
+  weights : null,
+  weightLearningRate : 0.1,
+  
+  bevel : 0.05,  
   
   selectedTile : null,
+  currentTile : null,
 
   getNbrTiles : function() {
     return Grid.width * Grid.height;
   },
 
+  // on a timer, update weights with the nearest 
+  createWeights : function( x, y ) {
+    if( Grid.weights == null ) {
+      Grid.weights = new Float32Array( Grid.width * Grid.height );
+      var gridSize = Grid.width * Grid.height;
+      for( var i = 0; i < gridSize; ++i ) { 
+        Grid.weights[ i ] = 0;
+      }
+    }    
+  },
+
+  findMaxWeight : function() {
+    Grid.createWeights();
+    
+    var xMax = 0;
+    var yMax = 0;
+    var wMax = 0;
+
+    for( var y = 0; y < Grid.height; ++y ) { 
+      for( var x = 0; x < Grid.width; ++x ) { 
+        var i = y * Grid.width +x;
+        var w = Grid.weights[ i ];
+        if( w > wMax ) {
+          xMax = x;
+          yMax = y;
+          wMax = w;
+        }
+      }
+    }
+
+    return { x: xMax, y: yMax };
+  },
+
+  updateWeights : function( xs, ys ) {
+    Grid.createWeights();
+
+    xs = parseInt( xs );
+    ys = parseInt( ys );
+
+    var a = Grid.weightLearningRate;
+    var b = 1.0 - a;
+
+    for( var y = 0; y < Grid.height; ++y ) { 
+      for( var x = 0; x < Grid.width; ++x ) { 
+        var i = y * Grid.width +x;
+
+        var oneValue = 0.0;
+        if( ( x == xs ) && ( y == ys ) ) {
+          oneValue = 1.0;
+        }
+
+        var oldValue = Grid.weights[ i ];
+        var newValue = a * oneValue + b * oldValue;
+        Grid.weights[ i ] = newValue;
+      }
+    }
+  },
+
+  selectTileCheck : function( xScreen, yScreen ) {
+    if( Grid.timer.hasElapsed() ) {
+        Grid.timer.reset();
+        Grid.selectTileUpdate( xScreen, yScreen );
+    }
+  },
+  
+  selectTileUpdate : function( xScreen, yScreen ) {
+    var tile = Grid.findTileNearest( xScreen, yScreen );
+    var id = Grid.getTileDivId( tile.x, tile.y );
+
+    Grid.updateWeights( tile.x, tile.y );
+
+    var wMax = Grid.findMaxWeight();
+    var idMax = Grid.getTileDivId( wMax.x, wMax.y );
+
+    Grid.updateSelection( id, idMax );
+  },
+
   selectTileNearest : function( xScreen, yScreen ) {
+    var tile = Grid.findTileNearest( xScreen, yScreen );
+    var id = Grid.getTileDivId( tile.x, tile.y );
+    Grid.selectTile( id );
+  },
+
+  findTileNearest : function( xScreen, yScreen ) {
+
     var dMin = screen.width * 2 * 2;
     var xMin = 0;
     var yMin = 0;
@@ -32,21 +124,25 @@ var Grid = {
       }
     }    
 
+    var tile = { x: xMin, y: yMin };
+    return tile;
     var id = Grid.getTileDivId( xMin, yMin );
     Grid.selectTile( id );
   },
 
   getTileOrigin : function() {
-    var bevel = window.innerHeight * 0.1;
-    var tileOrigin = { x: bevel, y: bevel };
+    var bevel = window.innerHeight * Grid.bevel;
+    var tilesWidth = window.innerHeight - ( bevel * 2 );
+    var xOrigin = ( window.innerWidth - tilesWidth ) * 0.5;
+    var tileOrigin = { x: xOrigin, y: bevel };
     return tileOrigin;
   },
 
   getTileSize : function() {
-    var bevel = window.innerHeight * 0.1;
+    var bevel = window.innerHeight * Grid.bevel;
     var tilesHeight = window.innerHeight - ( bevel * 2 );
     var tileHeight = tilesHeight / Grid.height;
-    var tilesWidth = window.innerWidth - ( bevel * 2 );
+    var tilesWidth = tilesHeight;//window.innerWidth - ( bevel * 2 );
     var tileWidth = tilesWidth / Grid.width;
     var tileSize = { w: tileWidth, h: tileHeight };
     return tileSize;
@@ -92,13 +188,18 @@ var Grid = {
   },
 
   getTileCoord : function( id ) {
-    var i1 = id.indexOf( ':' )+1;
-    var i2 = id.indexOf( ',' )+1;
-    var i3 = id.length
-    var l1 = i2 - i1 -1;
-    var l2 = i3 - i2 +1;
-    var x = id.substr( i1, l1 );
-    var y = id.substr( i2, l2 );
+    var x = 0;
+    var y = 0;
+    if( !!id ) {
+      var i1 = id.indexOf( ':' )+1;
+      var i2 = id.indexOf( ',' )+1;
+      var i3 = id.length
+      var l1 = i2 - i1 -1;
+      var l2 = i3 - i2 +1;
+      x = id.substr( i1, l1 );
+      y = id.substr( i2, l2 );
+    }
+
     var c = { x: x, y: y };
     return c;
   },
@@ -118,14 +219,35 @@ var Grid = {
     return did;
   },
 
-  deselectTile : function() {
-    if( Grid.selectedTile == null ) {
-      return;
+  updateSelection : function( idCurrent, idSelected ) {
+    if(    ( idCurrent  == Grid. currentTile )
+        && ( idSelected == Grid.selectedTile ) ) {
+      return; // no change
     }
 
-    var id = Grid.selectedTile;
-    var imgDiv = document.getElementById( id );
+    Grid. currentTile = idCurrent;
+    Grid.selectedTile = idSelected;
 
+    for( var y = 0; y < Grid.height; ++y ) { 
+      for( var x = 0; x < Grid.width; ++x ) { 
+        var id = Grid.getTileDivId( x, y );
+
+        if( id == Grid.selectedTile ) {
+          Grid.setStyleSelected( id );
+        }
+        else if( id == Grid.currentTile ) {
+          Grid.setStyleCurrent( id );
+        }
+        else {
+          Grid.setStyleNormal( id );
+        }
+      }
+    }
+  },
+
+  setStyleNormal : function( id ) {
+    console.log( "set normal: "+id );
+    var imgDiv = document.getElementById( id );
     var c = Grid.getTileCoord( id );     
     var r = Grid.getTileRect( c.x, c.y );
     imgDiv.style.border = "none";
@@ -135,16 +257,27 @@ var Grid = {
     imgDiv.style.width = r.w;
     imgDiv.style.height = r.h;
     imgDiv.style.zIndex = r.z;
-    Grid.selectedTile = null;
   },
 
-  selectTile : function( id ) {
-    Grid.deselectTile();
-    Grid.selectedTile = id;
+  setStyleCurrent : function( id ) {
+    console.log( "set current: "+id );
+    var imgDiv = document.getElementById( id );
+    var c = Grid.getTileCoord( id );     
+    var r = Grid.getTileRect( c.x, c.y );
+    imgDiv.style.border = "1px solid blue";
+    imgDiv.style.background = "#ffffff";
+    imgDiv.style.top = r.y;
+    imgDiv.style.left = r.x;
+    imgDiv.style.width = r.w;
+    imgDiv.style.height = r.h;
+    imgDiv.style.zIndex = r.z;
+  },
 
-    var imgDiv = document.getElementById( Grid.selectedTile );
+  setStyleSelected : function( id ) {
+    console.log( "set selected: "+id );
+    var imgDiv = document.getElementById( id );
     
-    var f = 1.2;    
+    var f = 1.1;    
     var c = Grid.getTileCoord( id );     
     var r = Grid.getTileRect( c.x, c.y );
     var h = r.h * f;
@@ -186,7 +319,7 @@ var Grid = {
 
           index = index +1;
         }
-        content = content + "<div class='tile' style='position: absolute; zIndex:10; top: "+r.y+"px; left: "+r.x+"px; width: "+r.w+"px; height: "+r.h+"px;' id='"+did+"' ><img id='"+iid+"' src='"+imgUrl+"' style='align:center; valign:center;max-width:100%; max-height:100%;' /></div>";
+        content = content + "<div class='tile' style='position: absolute; zIndex:10; top: "+r.y+"px; left: "+r.x+"px; width: "+r.w+"px; height: "+r.h+"px;' id='"+did+"' ><img id='"+iid+"' src='"+imgUrl+"' style='align:center; valign:center;max-width:100%; max-height:100%; margin-left: auto; margin-right: auto; display: block;' /></div>";
       }
     }
     var div = document.getElementById( "grid" );
@@ -222,7 +355,16 @@ var Grid = {
     xhr.send( null );
   },
 
+  hide : function() {
+    document.getElementById( Grid.id ).style.display = "none";
+  },
+  show : function() {
+    document.getElementById( Grid.id ).style.display = "block";
+  },
   setup : function( url ) {
+    Grid.timer = new Timer();
+    Grid.timer.setDuration( 100 ); // ~ 10Hz
+
     Grid.url = url;
     Grid.getData();
   }
@@ -230,5 +372,6 @@ var Grid = {
 };
 
 //Grid.setup( "http://www.reddit.com/r/earthporn/.json?limit=100" );
-Grid.setup( "http://www.reddit.com/r/funnypics/.json?limit=100" );
+//Grid.setup( "http://www.reddit.com/r/funnypics/.json?limit=100" );
+Grid.setup( "http://www.reddit.com/r/aww/.json?limit=100" );
 

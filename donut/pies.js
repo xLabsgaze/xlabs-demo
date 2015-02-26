@@ -24,7 +24,7 @@ var Pies = {
   SLICE_VALUE_VISITED : 1,
   SLICE_VALUE_ERROR   : 2,
 
-  PIE_IMAGE_FILE : "./donut/donut.png",
+  PIE_IMAGE_FILE : "donut.png",
 
   // Variables
   allPiesVisitedCallback : null,

@@ -25,7 +25,7 @@ var Paint = {
   HEAD_TRACK_Y_SCALE_FRAC_OF_HEIGHT : 0.5,
 
   // Image assets
-  ROTATE_IMAGE_FILE : "./donut/rotate.jpg",
+  ROTATE_IMAGE_FILE : "rotate.jpg",
   ROTATE_COLS : 5,
   ROTATE_ROWS : 13,
 

@@ -33,7 +33,7 @@ var Donut = {
   STATES : 9,
 
   DURATION_TRANSITION : 500, 
-  DURATION_GAZE : 40000, 
+  DURATION_GAZE : 50000, 
 
   // Game
   state : null,
@@ -78,7 +78,6 @@ var Donut = {
     if( state == Donut.STATE_PIES ) {
       Pies.onMouseMove();
     }
-    //Grid.selectTileNearest( x, y );
   },
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,10 +195,12 @@ var Donut = {
       Canvas.show();
     }
     else if( state == Donut.STATE_NONE ) {
+      xLabs.setConfig( "system.mode", "off" );
       Canvas.hide();
-      document.getElementById( "grid" ).style.display = "none";
+      Grid.hide();
     }
     else if( state == Donut.STATE_COMFORT ) {
+      xLabs.setConfig( "system.mode", "training" );
       Canvas.show();
     }
     else if( state == Donut.STATE_POSE ) {
@@ -222,7 +223,7 @@ var Donut = {
       Canvas.show();
     }
     else if( state == Donut.STATE_GAZE ) {
-      document.getElementById( "grid" ).style.display = "block";
+      Grid.show();
       duration = Donut.DURATION_GAZE;
       Canvas.show();
     }
@@ -234,7 +235,6 @@ var Donut = {
 
   // Key events
   start : function() {
-    console.log( "start: comfort state" );
     Donut.state.setState( Donut.STATE_COMFORT );
   },
 
@@ -247,7 +247,7 @@ var Donut = {
       Canvas.show();
       Canvas.clear();
       Gaze.update();
-      Grid.selectTileNearest( Gaze.xSmoothed, Gaze.ySmoothed );
+      Grid.selectTileCheck( Gaze.xSmoothed, Gaze.ySmoothed );
       Gaze.paint();
     }
 
@@ -263,8 +263,7 @@ var Donut = {
 
   // xLabs API
   onXlabsReady : function() {
-    xLabs.setConfidenceEnabled( false ); // want faster calib without robustness estimate
-    xLabs.setConfig( "system.mode", "training" );
+    //xLabs.setConfig( "system.mode", "training" );
   },
   onXlabsState : function() {
     Errors.update();

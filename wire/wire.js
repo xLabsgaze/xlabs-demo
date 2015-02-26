@@ -70,9 +70,9 @@ var Wire = {
   },
 
   onMouseMove : function() {
-    var x = Mouse.xMouseScreen;
-    var y = Mouse.yMouseScreen;
-    Grid.selectTileNearest( x, y );
+    //var x = Mouse.xMouseScreen;
+    //var y = Mouse.yMouseScreen;
+    //Grid.selectTileNearest( x, y );
   },
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +211,11 @@ var Wire = {
     console.log( "UI state changed to: " + Wire.uiState.getState() );
 
     var uiState = Wire.uiState.getState();
-    if( uiState == Wire.UI_STATE_ERROR ) {
+
+    if( uiState == Wire.UI_STATE_NONE ) {
+      xLabs.setConfig( "system.mode", "off" );
+    }
+    else if( uiState == Wire.UI_STATE_ERROR ) {
       Canvas.show();
     }
     else if( uiState == Wire.UI_STATE_INFO ) {
@@ -221,14 +225,16 @@ var Wire = {
       Canvas.show();
     }
     else if( uiState == Wire.UI_STATE_GAME ) {
+      xLabs.setConfig( "system.mode", "training" );
       Canvas.show();
     }
     else if( uiState == Wire.UI_STATE_GAZE ) {
-      document.getElementById( "grid" ).style.display = "block";
+      //document.getElementById( "grid" ).style.display = "block";
+      Grid.show();
       Canvas.show();
       Wire.gazeTimer.reset();
     }
-    
+
     // all UI state changes cause a reset of the game state:
     Wire.gameState.setState( Wire.GAME_STATE_READY ); // has no effect when already done
   },
@@ -273,6 +279,8 @@ var Wire = {
     var state = Wire.uiState.getState();
     if( state == Wire.UI_STATE_NONE ) {
       Canvas.hide(); // lazy
+      // Debug with mouse:
+      //Grid.selectTileCheck( Mouse.xMouseScreen, Mouse.yMouseScreen );
     }
     else if( state == Wire.UI_STATE_ERROR ) {
       Canvas.show(); // lazy
@@ -297,7 +305,8 @@ var Wire = {
       Canvas.show();
       Canvas.clear();
       Gaze.update();
-      Grid.selectTileNearest( Gaze.xSmoothed, Gaze.ySmoothed );
+      //Grid.selectTileNearest( Gaze.xSmoothed, Gaze.ySmoothed );
+      Grid.selectTileCheck( Gaze.xSmoothed, Gaze.ySmoothed );
       Gaze.paint();
     }
   },
@@ -309,20 +318,18 @@ var Wire = {
   }, 
 
   onXlabsReady : function() {
-    xLabs.setConfidenceEnabled( false ); // want faster calib without robustness estimate
-    xLabs.setConfig( "system.mode", "training" );
+//    xLabs.setConfig( "system.mode", "training" );
   },
   onXlabsState : function() {
   },
 
   start : function() {
-    console.log( "start" );
     Wire.uiState.setState( Wire.UI_STATE_GAME );
   },
 
   setup : function() {
     Wire.gazeTimer = new Timer();
-    Wire.gazeTimer.setDuration( 30000 );
+    Wire.gazeTimer.setDuration( 50000 );
 
     Wire.transitionTimer = new Timer();
     Wire.transitionTimer.setDuration( 2000 );
@@ -337,10 +344,12 @@ var Wire = {
     xLabs.setup( Wire.onXlabsReady, Wire.onXlabsState );
 
     document.getElementById( "start" ).onclick = Wire.start;
+
+    // Debug with mouse:
+    //Grid.show();
   }
 
 };
 
-// Debug with mouse:
-//Mouse.mouseMoveCallback = Wire.onMouseMove;
+// Normal gaze use:
 Wire.setup();
