@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.helpInfo {
+    position: absolute;
+    width: 100%;
+    right: 6px;
+    left : 6px;
+    color: orange;
+    font-size: 20px;
+    text-align: left;
+}
+
+#h1 {
+    top : 4px;
+}
+#h2 {
+    top : 26px;
+}
+#h3 {
+    top : 48px;
+}
+
+#faceDetected {
+    position: absolute;
+    text-align: center;
+    right : 8px;
+    top : 4px;
+    color: orange;
+    font-size: 25px;
+    width: 100%;
+}
+
+#left {
+    position: absolute;
+    text-align: left;
+    left : 18px;
+    bottom : 16px;
+    color: orange;
+    font-size: 25px;
+    width: 100%;
+}
+
+#right {
+    position: absolute;
+    text-align: right;
+    right : 18px;
+    bottom : 16px;
+    color: orange;
+    font-size: 25px;
+    width: 100%;
+}
+
+#zoom {
+    position: absolute;
+    text-align: center;
+    bottom : 16px;
+    color: orange;
+    font-size: 25px;
+    width: 100%;
+}

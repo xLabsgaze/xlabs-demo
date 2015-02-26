@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Virtual Gallery</title>
+    <!--css-->
+    <link href="css/visitor.css" rel="stylesheet" type="text/css" />
+    <!--libs-->
+    <script src="lib/jquery/jquery-1.11.1.js"></script>
+    <script src="lib/three/three.js"></script>
+    <script src="lib/three/Detector.js"></script>
+    <script src="lib/three/OBJLoader.js"></script>
+    <script src="lib/three/MTLLoader.js"></script>
+    <script src="lib/three/OBJMTLLoader.js"></script>
+    <script src="lib/three/OrbitControls.js"></script>
+    <script src="lib/three/THREEx.WindowResize.js"></script>
+    <script src="lib/three/DAT.GUI.min.js"></script>
+    <!--scripts-->
+
+    <script src="../api/xlabs.js"></script>
+    <script src="../useful/util.js"></script>
+    <script src="../useful/errors.js"></script>
+    <script src="js/xlabsController.js"></script>
+    <script src="js/Main.js"></script>
+    <script src="js/Visitor.js"></script>
+    <script src="js/BasicController.js"></script>
+</head>
+<body onload="main();">
+    <!--<div class="helpInfo" id="h1"></div>-->
+    <!--<div class="helpInfo" id="h2"></div>-->
+    <!--<div class="helpInfo" id="h3"></div>-->
+    <!--<div id="faceDetected">No Face</div>-->
+    <!--<div id="left"></div>-->
+    <!--<div id="right"></div>-->
+    <!--<div id="zoom"></div>-->
+    <div id="container"></div>
+	<!--<div id="instructions_overlay" style="background:url(assets/image/3DViewer_screen_shot_temp.png) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; position: absolute; z-index:5000"></div>-->
+	<div id="help_overlay" style="opacity:0.0; display:none; position:fixed; top: 0%; left: 0%; width: 100%; height: 100%;">
+		<center><img src="assets/image/instructions.png" alt="" style="width:50%; height:50%;"></center>
+    </div>	
+    <div id="loading" style="display:block">
+        <div id='xLabsDivOuter' style='position:fixed; left:0; top:50%; width:100%; background-color:white;'>
+            <center>
+                Loading...
+            </center>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
