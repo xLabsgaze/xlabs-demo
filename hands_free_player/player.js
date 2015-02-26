@@ -3,7 +3,6 @@ var xLabsPlayer = {
 
 
     actionsEnabled : 0,
-    noFaceCnt : 0,
     videoId : null,
     mouseInsideTop : 0,
 
@@ -49,7 +48,6 @@ var xLabsPlayer = {
             xLabsPlayer.mouseInsideTop = 0;
 
             window.onbeforeunload = function() {
-                // turn camera off
                 xLabs.setConfig( "system.mode", "off" );
             }
         }
