@@ -15,8 +15,17 @@
 // https://nyquist212.wordpress.com/2014/03/11/simple-d3-js-force-layout-example-in-less-than-100-lines-of-code/
 // http://stackoverflow.com/questions/9901565/charge-based-on-size-d3-force-layout
 
+  var params = {
+    radius : 108,//screen.height * 0.1,
+//    force : screen.height * 10.0,//25.0,
+    force : 1080 * 10.0,//25.0,
+    friction : 0.8,
+    gravity : 0.3,
+    fontSize : 40
+  }
 /* Set the diagrams Height & Width */
-    var h = 768, w = 1024;
+    var h = screen.height;
+    var w = screen.width;
 /* Set the color scale we want to use */
 //    var color = d3.scale.category20();
 /* Establish/instantiate an SVG container object */
@@ -43,7 +52,8 @@
 /* Pre-Load the json data using the queue library */
 queue()
 //    .defer(d3.json, "nodes.json")
-    .defer(d3.json, "colours.json")
+//    .defer(d3.json, "colours.json")
+    .defer(d3.json, "colours_dark.json")
 //    .defer(d3.json, "links.json")
     .await(makeDiag); 
 
@@ -57,14 +67,14 @@ var stuff = {
       var element = stuff.circles[0][ node.index ];
       var classValue = element.getAttribute( 'class' );
       if( classValue == 'big' ) {
-        return -9000;
+        return -params.force;
       } 
       else if( classValue == 'med' ) {
-        return -6000;
+        return -params.force * 0.5;
       } 
     }
 
-    return -3000;
+    return -params.force * 0.1;
   }
 };
 
@@ -105,6 +115,16 @@ function rgb2Hsv( rgb ) {
   }
 
   return { h: hue, s: sat, v: val };
+}
+
+function calcFontSize( classValue ) {
+  if( classValue == "big" ) {
+    return params.fontSize;
+  }
+  if( classValue == "med" ) {
+    return Math.floor( params.fontSize * 0.75 );
+  }
+  return Math.floor( params.fontSize * 0.5 );
 }
 
 function similarColour( colour1, colour2 ) {
@@ -151,10 +171,12 @@ function makeDiag(error, nodes, table) {
                     .nodes(nodes)
                     .links(links)
                     .size([w,h])
-                    .linkDistance([50])
+                    .linkDistance([params.radius * 2])
                     .charge( stuff.forceFn ) //[-1500])
 //                    .gravity(0.3)
-                    .gravity(4.3)
+//                    .gravity(4.3)
+                    .gravity(params.gravity)
+                    .friction(params.friction)
                     .start();
 //    stuff.force = force;
     /* Draw the edges/links between the nodes */
@@ -170,7 +192,7 @@ function makeDiag(error, nodes, table) {
                     .data(nodes)
                     .enter()
                     .append("circle")
-                    .attr("r", 20)
+                    .attr("r", params.radius)
 //                    .attr("opacity", 0.5)
                     .style("fill", function(d,i) { 
 //                        console.log( JSON.stringify( d ) );
@@ -234,29 +256,30 @@ function makeDiag(error, nodes, table) {
         }
       }
 
-      var small = 20;
-      var med = 30;
-      var big = 40;
+      var small = params.radius * 0.5;//20;
+      var med = params.radius * 0.75;
+      var big = params.radius;
 
       for( var i = 0; i < circles.length; i++ ) {
         var radius = small;
         var classValue = "small";
-        var fontSize = 10;
+//        var fontSize = 10;
         if( i == iMin ) {
           radius = big;
           classValue = "big";
-          fontSize = 32;
+//          fontSize = params.fontSize;
         }
         else {
           for( var j = 0; j < near.length; j++ ) {
             if( i == near[ j ] ) {
               radius = med;
               classValue = "med";
-              fontSize = 18;
+//              fontSize = 18;
             }
           }
         }
 
+        var fontSize = calcFontSize( classValue );
         circles[ i ].setAttribute( 'r', radius );
         circles[ i ].setAttribute( 'class', classValue );
         var t = stuff.texts[0][ i ];
