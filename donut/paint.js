@@ -385,9 +385,9 @@ var Paint = {
   },
 
   paintHeadMark : function( x, y ) {
-    Canvas.context.fillStyle = "rgba(90, 90, 90, 1)";
+    Canvas.context.fillStyle = "rgba(  0,  0,  0, 1)";
     Util.fillCircle( x, y, Paint.HEAD_TRACK_FILL_SIZE );
-    Canvas.context.strokeStyle = "rgba(90, 90, 90, 1)";
+    Canvas.context.strokeStyle = "rgba(  0,  0,  0, 1)";
     Util.drawCircle( x, y, Paint.HEAD_TRACK_STROKE_SIZE );
 
     if( Errors.hasBadTrack() ) {

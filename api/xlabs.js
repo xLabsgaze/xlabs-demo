@@ -88,8 +88,8 @@ var xLabs = {
     // Defines ordering of values
     // t1,t2,xs,ys
     // For truth, also used for clicks
-    var csv = t1 + "," + t2 + "," + xScreen + "," + yScreen;
-    //console.log( "truth: "+csv );
+    var csv = t1 + "," + t2 + "," + parseInt( xScreen  ) + "," + parseInt( yScreen );
+    console.log( "xLabs truth: "+csv );
     xLabs.setConfig( "truth.append", csv );    
   },
 
