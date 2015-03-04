@@ -107,15 +107,12 @@ var Donut = {
     if( state == Donut.STATE_GAZE ) {
       var stopGaze = false;
       if( hasNoFace ) {   
-        console.log( "stop gaze on no face" );
         stopGaze = true;
       }
       else if( timeElapsed ) { 
-        console.log( "stop gaze on timer" );
         stopGaze = true;
       }
       else if( hasBadPose ) {
-        console.log( "stop gaze on bad pose" );
         stopGaze = true;
       }
 
@@ -128,42 +125,28 @@ var Donut = {
 
     // Only Pose and Pies states have an error mode.
     // In error mode, we stay until errors fixed + interval; otherwise we revert.
+    // We can only go PIES->ERROR->PIES and PIES->POSE->PIES not ERROR->PIES or vice versa.
+
     if( state == Donut.STATE_ERROR ) {
       if( hasError ) {
-      //  Donut.timer.reset(); // hold it in this state until after x seconds after fixing it
-        // dont need a timer as takes time to heal the error measure
+        Donut.timer.reset(); // hold it in this state until after x seconds after fixing it
       }
       else { // no errors
-      //  if( timeElapsed ) {
-          Donut.state.setStateOld(); // go back to previous state
-      //  }
-      }
-      return;
-    }
-
-    // OK we only have pies or pose or FADE left.
-    // What if we have an error, then goto error:
-    if( ( state == Donut.STATE_PIES ) && ( Mouse.bMouseDown ) ) {
-      if( hasErrorExceptTracking ) {
-        Donut.state.setState( Donut.STATE_ERROR ); // go back to previous state
-        return;
-      }
-    }
-    else if( hasError ) {
-      Donut.state.setState( Donut.STATE_ERROR ); // go back to previous state
-      return;
-    }
-
-    // now we're in pose or pies with NO errors
-    // however we may have Errors.hasBadPose()
-    if( state == Donut.STATE_FADE ) {
         if( timeElapsed ) {
-	  Donut.state.setState( Donut.STATE_GAZE ); // start gaze
+          Donut.state.setStateOld(); // go back to previous state, pose or pies
         }
+      }
+
+      return;
     }
+
     if( state == Donut.STATE_POSE ) {
       // -- fix it, then we show the button. advance on click
-      if( hasBadPose ) {
+      if( hasErrorExcludingPose ) {
+        Donut.timer.reset(); // hold it in this state until after x seconds after fixing it
+        Donut.state.setState( Donut.STATE_ERROR ); // go back to previous state
+      }
+      else if( hasBadPose ) {
         Donut.timer.reset(); // hold it in this state until after x seconds after fixing it
       }
       else { // no errors
@@ -174,14 +157,37 @@ var Donut = {
           Paint.buttonHide();
         }
       }
+
+      return;
     }
-    else if( state == Donut.STATE_PIES ) {
-      // We allow bad pose in this case, it's too disruptive fighting the head movement requirement.
-      // We have handled errors already.
-      // 
-      if( Pies.allPiesVisited() ) {
-        Donut.state.setState( Donut.STATE_DONE );
+
+    // OK we only have PIES or FADE left.
+    // What if we have an error, then goto error:
+    if( state == Donut.STATE_PIES ) {
+      if( Mouse.bMouseDown ) {
+        // don't interrupt
       }
+      else { // mouse not down
+        if( hasError ) {
+          Donut.timer.reset(); // hold it in this state until after x seconds after fixing it
+          Donut.state.setState( Donut.STATE_ERROR ); // go back to previous state
+        }
+
+        if( Pies.allPiesVisited() ) {
+          Donut.state.setState( Donut.STATE_DONE );
+        }
+      }
+
+      return;
+    }
+
+    if( state == Donut.STATE_FADE ) {
+      // dont care about errors, just get through this part
+      if( timeElapsed ) {
+        Donut.state.setState( Donut.STATE_GAZE ); // start gaze
+      }
+
+      return;
     }
   },
 
@@ -189,7 +195,7 @@ var Donut = {
     // only happens on state change:
     var duration = Donut.DURATION_TRANSITION; // default
     var state = Donut.state.getState();
-    console.log( "State changed to: " + Donut.state.getState() );
+    //console.log( "State changed to: " + Donut.state.getState() );
 
          if( state == Donut.STATE_ERROR ) {
       Canvas.show();
@@ -197,7 +203,7 @@ var Donut = {
     else if( state == Donut.STATE_NONE ) {
       xLabs.setConfig( "system.mode", "off" );
       Canvas.hide();
-      Grid.hide();
+      Graph.hide();
     }
     else if( state == Donut.STATE_COMFORT ) {
       xLabs.setConfig( "system.mode", "training" );
@@ -223,7 +229,7 @@ var Donut = {
       Canvas.show();
     }
     else if( state == Donut.STATE_GAZE ) {
-      Grid.show();
+      Graph.show();
       duration = Donut.DURATION_GAZE;
       Canvas.show();
     }
@@ -247,17 +253,17 @@ var Donut = {
       Canvas.show();
       Canvas.clear();
       Gaze.update();
-      Grid.selectTileCheck( Gaze.xSmoothed, Gaze.ySmoothed );
+      //Grid.selectTileCheck( Gaze.xSmoothed, Gaze.ySmoothed );
+      Graph.updateSelection( Gaze.xSmoothed, Gaze.ySmoothed );
       Gaze.paint();
     }
-
   },
   update : function() {
     Donut.updateState();
   }, 
 
   onCalibrationComplete : function() {
-    console.log( "calibration complete." );
+    //console.log( "calibration complete." );
     Donut.state.setState( Donut.STATE_DONE ); // all the successor states are n+1 of the button confirms
   },
 
@@ -272,6 +278,9 @@ var Donut = {
 
   // Setup
   setup : function() {
+    var colours = "../colours/colours_dark.json";
+    Graph.setup( "graph", colours, false );
+
     Donut.timer = new Timer();
     Donut.timer.setDuration( 2000 );
     Donut.state = new State( Donut.STATES, Donut.STATE_NONE, Donut.onUiStateChanged );

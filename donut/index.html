@@ -8,9 +8,13 @@
   <p>In this demo, you calibrate the gaze-tracking system by PRESSING and HOLDING the mouse on some donuts while moving your head to "eat" them.</p>
   <p>After eating 5 donuts, live gaze-tracking results are shown.</p>
   <button id="start" style="color: #FFF; background-color: #900; border: 1px solid #900; font-weight: bold;font-size: 150%; text-transform: uppercase; margin: 20px; ">Start</button>
-  <div id="grid" style="display:none;">
+  <div id="graph">
   </div>
   
+  <script type="text/javascript" src="../colours/js/libs/d3.v3.min.js"> </script>
+  <script type="text/javascript" src="../colours/js/libs/queue.v1.min.js"> </script>
+  <script>window.jQuery || document.write('<script src="../colours/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+
   <script type="text/javascript" src="../api/xlabs.js"></script>
   <script type="text/javascript" src="../useful/util.js"></script>
   <script type="text/javascript" src="../useful/state.js"></script>
@@ -20,7 +24,8 @@
   <script type="text/javascript" src="../useful/mouse.js"></script>
   <script type="text/javascript" src="../useful/gaze.js"></script>
   <script type="text/javascript" src="../useful/head.js"></script>
-  <script type="text/javascript" src="../useful/grid.js"></script>
+  <!--<script type="text/javascript" src="../useful/grid.js"></script>-->
+  <script type="text/javascript" src="../colours/graph.js"> </script>
   <script type="text/javascript" src="pies.js"></script>
   <script type="text/javascript" src="paint.js"></script>
   <script type="text/javascript" src="donut.js"></script>

@@ -68,8 +68,9 @@
     return false;
   }
 
-  var graph = {
+  var Graph = {
  
+    id : "svg",
     svg : null,
     forceLayout : null,
     circles : null,
@@ -87,8 +88,8 @@
     },
 
     updateForces : function( node ) {
-      if( graph.circles != null ) {
-        var element = graph.circles[0][ node.index ];
+      if( Graph.circles != null ) {
+        var element = Graph.circles[0][ node.index ];
         var classValue = element.getAttribute( 'class' );
         if( classValue == 'big' ) {
           return -params.force;
@@ -101,7 +102,7 @@
     },
 
     updateSelection : function( x, y ) {
-      var circles = $("#svg circle" );
+      var circles = $("#"+Graph.id+" circle" );
       var dMin = screen.width * screen.width;
       var iMin = 0;
 
@@ -129,29 +130,33 @@
       for( var i = 0; i < circles.length; i++ ) {
         var radius = small;
         var classValue = "small";
-//        var fontSize = 10;
         if( i == iMin ) {
           radius = big;
           classValue = "big";
-//          fontSize = params.fontSize;
         }
         else {
           for( var j = 0; j < near.length; j++ ) {
             if( i == near[ j ] ) {
               radius = med;
               classValue = "med";
-//              fontSize = 18;
             }
           }
         }
 
-        var fontSize = graph.calcFontSize( classValue );
+        var fontSize = Graph.calcFontSize( classValue );
         circles[ i ].setAttribute( 'r', radius );
         circles[ i ].setAttribute( 'class', classValue );
-        var t = graph.labels[0][ i ];
+        var t = Graph.labels[0][ i ];
         t.style[ "font-size" ] = fontSize+"px";
       }
-      graph.forceLayout.start(); // restart the force due to new constraints
+      Graph.forceLayout.start(); // restart the force due to new constraints
+    },
+
+    hide : function() {
+      document.getElementById( Graph.id ).style.display = "none";
+    },
+    show : function() {
+      document.getElementById( Graph.id ).style.display = "block";
     },
 
     // Define the main worker or execution function 
@@ -174,18 +179,18 @@
       }
 
       // Establish the dynamic force behavor of the nodes 
-      graph.forceLayout = d3.layout.force()
+      Graph.forceLayout = d3.layout.force()
                       .nodes(nodes)
                       .links(links)
                       .size([screen.width,screen.height])  
                       .linkDistance( [ params.radius * 2 ] )
-                      .charge( graph.updateForces )
+                      .charge( Graph.updateForces )
                       .gravity( params.gravity )
                       .friction( params.friction )
                       .start();
 
       // Draw the edges/links between the nodes that are conceptually similar
-      var edges = graph.svg.selectAll( "line" )
+      var edges = Graph.svg.selectAll( "line" )
                       .data(links)
                       .enter()
                       .append("line")
@@ -194,7 +199,7 @@
                       .attr("marker-end", "url(#end)");
   
       // Draw the nodes themselves
-      var circles = graph.svg.selectAll( "circle" )
+      var circles = Graph.svg.selectAll( "circle" )
                       .data( nodes )
                       .enter()
                       .append( "circle" )
@@ -202,12 +207,12 @@
                       .style( "fill", function( d, i ) { 
                         return d.value; 
                       })
-                      .call( graph.forceLayout.drag );
+                      .call( Graph.forceLayout.drag );
   
-      graph.circles = circles;
+      Graph.circles = circles;
 
       // Draw the node labels first 
-      var texts = graph.svg.selectAll("text")
+      var texts = Graph.svg.selectAll("text")
                      .data(nodes)
                      .enter()
                      .append( "text" )
@@ -216,10 +221,10 @@
                      .attr( "font-size", "10px" )
                      .text(function(d) { return d.name; }); 
   
-      graph.labels = texts;
+      Graph.labels = texts;
 
       // Run the Force effect
-      graph.forceLayout.on( "tick", function() {
+      Graph.forceLayout.on( "tick", function() {
         edges.attr("x1", function(d) { return d.source.x; })
              .attr("y1", function(d) { return d.source.y; })
              .attr("x2", function(d) { return d.target.x; })
@@ -232,32 +237,33 @@
       }); // End tick func
     },
 
-    setup : function( parentId, mouse ) {
+    setup : function( parentId, colours, mouse ) {
 
       // Establish/instantiate an SVG container object 
-      //graph.svg = d3.select( "body" );
+      //Graph.svg = d3.select( "body" );
       var parent = d3.select( "#"+parentId );
       //var e2 = d3.select( "#"+parentId );
-      graph.svg = parent
+      Graph.svg = parent
                   .append( "svg" )
-                  .attr( "style","position:absolute;left:0;top:0;display:block;margin:auto" ) // centered
+                  .attr( "style","position:absolute;left:0;top:0;display:none;margin:auto" ) // centered
                   .attr( "height", screen.height ) 
                   .attr( "width", screen.width )
-                  .attr( "id","svg" );
+                  .attr( "id", Graph.id );
 
       // Pre-Load the json data using the queue library 
       queue()
     //    .defer( d3.json, "colours.json" )
-        .defer( d3.json, "colours_dark.json" )
-        .await( graph.create ); 
+    //    .defer( d3.json, "colours_dark.json" )
+        .defer( d3.json, colours )
+        .await( Graph.create ); 
 
       // optionally interact with mouse:
       if( mouse ) {
         $(document).mousemove( function( e ) {
-          var svg = document.getElementById( "svg" );
+          var svg = document.getElementById( Graph.id );
           var x = e.pageX - svg.getBoundingClientRect().left;
           var y = e.pageY - svg.getBoundingClientRect().top;
-          graph.updateSelection( x, y );
+          Graph.updateSelection( x, y );
         } );
       }
     }

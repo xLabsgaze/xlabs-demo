@@ -6,7 +6,7 @@ var Paint = {
 
   // Styles
   FONT_SIZE : 32,
-  BACKGROUND_STYLE : "rgba( 50, 50, 50, 1.0 )",
+  BACKGROUND_STYLE : "rgba( 255, 255, 255, 1.0 )",
 
   // Buttons
   BUTTON_X : 0.5,
@@ -254,7 +254,7 @@ var Paint = {
       }
       else if( pieValue == Pies.PIE_VALUE_MOUSEOVER ) {
 //        Canvas.context.fillStyle = "rgba(0, 180, 0, 1.0)"; // "click me"
-        Canvas.context.fillStyle = "rgba(255, 255, 255, 0.7)"; // "click me"
+        Canvas.context.fillStyle = "rgba(155, 255, 155, 0.7)"; // "click me"
         Util.fillCircle( centreX, centreY, pieCentreSizePixels );
       }
       else if( pieValue == Pies.PIE_VALUE_MOUSEDOWN ) {
@@ -262,15 +262,15 @@ var Paint = {
           Canvas.context.fillStyle = "rgba(0, 200, 0, 1.0)"; // "click me"
           Util.fillCircle( centreX, centreY, pieCentreSizePixels );
 
-          var fontSize = 40;
-          var text = "OK!";
+          var fontSize = 32;
+          var text = "OK";
           Canvas.context.font=fontSize+"px Arial";
           var metrics = Canvas.context.measureText( text );
           var xText = centreX - (metrics.width * 0.5);
           var yText = centreY + (fontSize * 0.25);
-          Canvas.context.fillStyle = "rgba(100, 100, 100, 1 )";
+          Canvas.context.fillStyle = "rgba(200, 200, 200, 1 )";
           Canvas.context.fillText( text, xText+2, yText+2 );
-          Canvas.context.fillStyle = "rgba(255, 255, 255, 1 )";
+          Canvas.context.fillStyle = "rgba(0, 100, 0, 1 )";
           Canvas.context.fillText( text, xText, yText );
         }
         else {
@@ -385,9 +385,9 @@ var Paint = {
   },
 
   paintHeadMark : function( x, y ) {
-    Canvas.context.fillStyle = "rgba(255, 255, 255, 1)";
+    Canvas.context.fillStyle = "rgba(90, 90, 90, 1)";
     Util.fillCircle( x, y, Paint.HEAD_TRACK_FILL_SIZE );
-    Canvas.context.strokeStyle = "rgba(255, 255, 255, 1)";
+    Canvas.context.strokeStyle = "rgba(90, 90, 90, 1)";
     Util.drawCircle( x, y, Paint.HEAD_TRACK_STROKE_SIZE );
 
     if( Errors.hasBadTrack() ) {
@@ -416,7 +416,7 @@ var Paint = {
     var by2 = h - by1;
 
     var cx = w * 0.5;
-    var cy = h * 0.5;
+    var cy = h * 0.45;//0.5;
     var hx = cx - ( Head.xHead * positionScale );
     var hy = cy + ( Head.yHead * positionScale );
 
@@ -525,8 +525,12 @@ var Paint = {
     Paint.paintTextFixed( text4, textStyle, fontSize, xScreenFrac, yScreenFrac, 3 );
   },
 
+  paintInfo : function( infoMessage ) {
+    Paint.paintTextCentre( infoMessage, null, null, "rgba(100, 100, 100, 1 )", 32, 0.5 );
+  },
+
   paintError : function( errorMessage ) {
-    Paint.paintTextCentre( errorMessage, null, "rgba(200, 20, 0, 0.7 )", "rgba(255, 255, 255, 1 )", 32, 0.5 );
+    Paint.paintTextCentre( errorMessage, null, "rgba(200, 0, 0, 1.0 )", "rgba(255, 255, 255, 1 )", 32, 0.5 );
   },
 
   paintPriority : function( priorityMessage ) {
@@ -587,6 +591,7 @@ var Paint = {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   buttonPaint : function( buttonText, buttonStyle, buttonTextStyle, fontSize ) {
     // paint the button:
+    Canvas.context.lineWidth = 1;
     Paint.buttonPainted = true;
     var rect = Paint.buttonGetRectDefault();
 
@@ -604,18 +609,23 @@ var Paint = {
 
 
     Canvas.context.fillText( buttonText, xText, yText );
-    Canvas.context.stokeWidth = 1;
     Canvas.context.strokeStyle = "rgba( 127,127,127,0.5 );";
     Canvas.context.strokeRect( rect.x, rect.y, rect.w, rect.h );
   },
 
-  paintMessageButton : function( text, buttonText, isInfo ) {
-    // if mouseover...
-
+  paintMessageButton : function( barText, buttonText, isInfo ) {
     var fontSize = 32;
-    var barStyle = buttonText !== null || isInfo ? "rgba(0,0,0,0)" : "rgba( 200, 0, 0, 1.0 )" ;
+    //var barStyle = buttonText !== null || isInfo ? "rgba(0,0,0,0)" : "rgba( 200, 0, 0, 1.0 )" ;
+    var  barStyle = null;//"rgba(0,0,0,0)"; // transparent
+    var textStyle = "rgba( 100, 100, 100, 1.0 )" // dark grey
+    if( isInfo ) {
+      barStyle = "rgba(200,0,0,1.0)"; // transparent
+      textStyle = "rgba( 255, 255, 255, 1.0 )" // dark grey
+    }
 
-    Paint.paintTextCentre( text, Paint.BACKGROUND_STYLE, barStyle, "rgba(255, 255, 255, 1.0 )", fontSize, 0.5 );
+    if( barText != null ) {
+      Paint.paintTextCentre( barText, Paint.BACKGROUND_STYLE, barStyle, textStyle, fontSize, 0.5 );
+    }
 
     if( buttonText == null ) {
       return;
@@ -681,6 +691,9 @@ var Paint = {
       if( Errors.hasErrorExcludingPose() ) {
         Paint.paintError( Errors.errorMessage );     
       }
+      else {
+        Paint.paintInfo( "Fixed! Thankyou :)" );     
+      }
     }
     else if( state == Donut.STATE_NONE ) {
       // nothing      
@@ -716,16 +729,16 @@ var Paint = {
     // Messages
     //if( Errors.errorMessage.length > 0 ) {
     if( Errors.hasErrorExcludingPose() ) {
-      Paint.paintMessageButton( Errors.errorMessage, null );
+      Paint.paintMessageButton( Errors.errorMessage, null, true );
     }
     else {
-      Paint.paintMessageButton( "Adjust seat and computer - make yourself comfortable.", "Next" );
+      Paint.paintMessageButton( "Adjust seat and computer - make yourself comfortable.", "Next", false );
     }
   },        
   paintStepPose : function() {
 
     if( Errors.hasErrorExcludingPose() ) {
-      Paint.paintMessageButton( Errors.errorMessage, null );
+      Paint.paintMessageButton( Errors.errorMessage, null, true );
       return;
     }
 
@@ -738,27 +751,27 @@ var Paint = {
 
     var timeout = Donut.timer.hasElapsed();//Paint.getTransitionTime();
     if( timeout < 1.0 ) {
-      Paint.paintMessageButton( "Get yourself in the centre of the camera view.", null );
+      Paint.paintMessageButton( "Get yourself in the centre of the camera view.", null, false );
     }
     else if( Errors.hasBadPoseX() ) {
       //if( .state.kvHeadX < 0.0 ) {    
       if( xHead < 0.0 ) {    
-        Paint.paintMessageButton( "Please move a little to the left.", null );
+        Paint.paintMessageButton( "Please move a little to the left.", null, false );
       }
       else {
-        Paint.paintMessageButton( "Can you move to the right a bit?", null );
+        Paint.paintMessageButton( "Can you move to the right a bit?", null, false );
       }
     }
     else if( Errors.hasBadPoseY() ) {
       if( yHead < 0.0 ) {    
-        Paint.paintMessageButton( "Aim the camera up a bit higher.", null );
+        Paint.paintMessageButton( "Aim the camera up a bit higher.", null, false );
       }
       else {
-        Paint.paintMessageButton( "Point the camera down towards the desk a little.", null );
+        Paint.paintMessageButton( "Point the camera down towards the desk a little.", null, false );
       }
     }
     else {
-      Paint.paintMessageButton( "That's great, thanks.", "Next" );
+      Paint.paintMessageButton( "That's great, thanks.", "Next", false );
     }
 
     Paint.paintPose();
@@ -780,7 +793,7 @@ var Paint = {
     var centreXa = centreX - pieSizePixels * 1.0;
     var centreXb = centreX + pieSizePixels * 1.0;
 
-    Paint.paintMessageButton( "Eat donuts, by looking at them while PRESSING mouse button & rotating your head.", "I'm ready" );
+    Paint.paintMessageButton( "Eat donuts, by looking at them while PRESSING mouse button & rotating your head.", "I'm ready", false );
 //    Paint.paintPieImage( centreXa, centreY, pieSizePixels );
     Paint.paintRotateImage( centreXb, centreY, pieSizePixels );
     Paint.paintPiePixels( centreXa, centreY, true, Paint.PIE_VALUE_MOUSEDOWN, 0 );
@@ -801,25 +814,17 @@ var Paint = {
 
     if( Mouse.bMouseDown == false ) {
       // Messages
+      //if( Errors.hasErrorExcludingPose() ) {//Errors.errorMessage.lengt != null ) {
       if( Errors.hasErrorExcludingPose() ) {//Errors.errorMessage.lengt != null ) {
-        Paint.paintMessageButton( Errors.errorMessage, null );
+        Paint.paintMessageButton( Errors.errorMessage, null, true );
       }
-      //if( Errors.priorityMessage != null ) {
-      //  Paint.paintPriority( Errors.priorityMessage );
-      //}
-      //if( Errors.warningMessage != null ) {
-      //  Paint.paintWarning( Errors.warningMessage );
-      //}
-
-      // Instructions
-      //Paint.paintHelp( .state ); deprecated, will have some animation graphic instead.
 
       // Pose crosshairs
       Paint.paintPose();
     }
   },        
   paintStepFadeM : function() {
-    Paint.paintMessageButton( "Calibration ready!", "Continue" );
+    Paint.paintMessageButton( "Calibration ready!", "Continue", false );
   },        
   paintStepFade : function() {
     var timeout = Donut.timer.elapsedFrac();//Paint.getTransitionTime();

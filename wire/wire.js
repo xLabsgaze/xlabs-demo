@@ -65,6 +65,7 @@ var Wire = {
     //console.log( "start="+xStart+","+yStart+" click="+xLabsCI.mouseUpScreenX+","+xLabsCI.mouseUpScreenY );
     var radius = Path.getTargetSize() * 2.0;
     if( d < radius ) {
+      Head.reset();
       Wire.gameState.setState( Wire.GAME_STATE_PLAYING );
     }
   },
@@ -230,7 +231,8 @@ var Wire = {
     }
     else if( uiState == Wire.UI_STATE_GAZE ) {
       //document.getElementById( "grid" ).style.display = "block";
-      Grid.show();
+      //Grid.show();
+      Graph.show();
       Canvas.show();
       Wire.gazeTimer.reset();
     }
@@ -306,7 +308,8 @@ var Wire = {
       Canvas.clear();
       Gaze.update();
       //Grid.selectTileNearest( Gaze.xSmoothed, Gaze.ySmoothed );
-      Grid.selectTileCheck( Gaze.xSmoothed, Gaze.ySmoothed );
+      //Grid.selectTileCheck( Gaze.xSmoothed, Gaze.ySmoothed );
+      Graph.updateSelection( Gaze.xSmoothed, Gaze.ySmoothed );
       Gaze.paint();
     }
   },
@@ -328,6 +331,9 @@ var Wire = {
   },
 
   setup : function() {
+    var colours = "../colours/colours_dark.json";
+    Graph.setup( "graph", colours, false );
+
     Wire.gazeTimer = new Timer();
     Wire.gazeTimer.setDuration( 50000 );
 
