@@ -89,7 +89,7 @@ var xLabs = {
     // t1,t2,xs,ys
     // For truth, also used for clicks
     var csv = t1 + "," + t2 + "," + xScreen + "," + yScreen;
-    console.log( "truth: "+csv );
+    //console.log( "truth: "+csv );
     xLabs.setConfig( "truth.append", csv );    
   },
 
@@ -100,12 +100,12 @@ var xLabs = {
     }
     
     xLabs.setConfig( "calibration.request", request );    
-    console.log( "Calibrating..." );
+    console.log( "xLabs: Calibrating..." );
   },
 
   calibrationClear : function() {
     xLabs.setConfig( "calibration.clear", request );    
-    console.log( "Clearing calibration..." );
+    console.log( "xLabs: Clearing calibration..." );
   },
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +147,7 @@ var xLabs = {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   documentOffset : function() {
     if( !xLabs.documentOffsetReady() ) {
-      throw "Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
+      throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
     var x = parseInt( xLabs.getConfig( "browser.document.offset.x" ) );
     var y = parseInt( xLabs.getConfig( "browser.document.offset.y" ) );
@@ -164,7 +164,7 @@ var xLabs = {
 
   scr2docX: function( screenX ) {
     if( !xLabs.documentOffsetReady() ) {
-      throw "Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
+      throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
 
     var xOffset = xLabs.getConfig( "browser.document.offset.x" );
@@ -173,7 +173,7 @@ var xLabs = {
 
   scr2docY: function( screenY ) {
     if( !xLabs.documentOffsetReady() ) {
-      throw "Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
+      throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
 
     var yOffset = xLabs.getConfig( "browser.document.offset.y" );
@@ -189,7 +189,7 @@ var xLabs = {
 
   doc2scrX: function( documentX ) {
     if( !xLabs.documentOffsetReady() ) {
-      throw "Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
+      throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
     var xOffset = xLabs.getConfig( "browser.document.offset.x" );
     return documentX + window.screenX + xOffset;
@@ -197,7 +197,7 @@ var xLabs = {
 
   doc2scrY: function( documentY ) {
     if( !xLabs.documentOffsetReady() ) {
-      throw "Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
+      throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
     var yOffset = xLabs.getConfig( "browser.document.offset.y" );
     return documentY + window.screenY + yOffset;
