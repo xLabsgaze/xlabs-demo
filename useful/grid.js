@@ -130,9 +130,13 @@ var Grid = {
     Grid.selectTile( id );
   },
 
+  spacing : 0.1,
+  
   getTileOrigin : function() {
     var bevel = window.innerHeight * Grid.bevel;
-    var tilesWidth = window.innerHeight - ( bevel * 2 );
+    var space = window.innerHeight * Grid.spacing;
+    var tilesWidth = window.innerHeight - ( bevel * 2 );// - ( space * (Grid.width-1) );
+    var tileWidth = tilesWidth / Grid.width;
     var xOrigin = ( window.innerWidth - tilesWidth ) * 0.5;
     var tileOrigin = { x: xOrigin, y: bevel };
     return tileOrigin;
@@ -140,9 +144,10 @@ var Grid = {
 
   getTileSize : function() {
     var bevel = window.innerHeight * Grid.bevel;
-    var tilesHeight = window.innerHeight - ( bevel * 2 );
+    var space = window.innerHeight * Grid.spacing;
+    var tilesHeight = window.innerHeight - ( bevel * 2 ) - ( space * (Grid.width-1) );
     var tileHeight = tilesHeight / Grid.height;
-    var tilesWidth = tilesHeight;//window.innerWidth - ( bevel * 2 );
+    var tilesWidth = window.innerHeight - ( bevel * 2 ) - ( space * (Grid.width-1) );
     var tileWidth = tilesWidth / Grid.width;
     var tileSize = { w: tileWidth, h: tileHeight };
     return tileSize;
@@ -177,14 +182,7 @@ var Grid = {
     var c = Grid.getTileCoord( id );
     var did = Grid.getTileDivId( c.x, c.y );
 
-    if( Grid.selectedTile != null ) {
-      if( Grid.selectedTile == did ) {
-        Grid.deselectTile();
-        return;
-      }
-    }
-
-    Grid.selectTile( did );//x, y );
+    Grid.updateSelection( did, did );
   },
 
   getTileCoord : function( id ) {
@@ -207,8 +205,11 @@ var Grid = {
   getTileRect : function( x, y ) {
     var tileOrigin = Grid.getTileOrigin();
     var tileSize = Grid.getTileSize();
-    var top = tileOrigin.y + y * tileSize.h;
-    var left = tileOrigin.x + x * tileSize.w;
+    //var top = tileOrigin.y + y * tileSize.h;
+    //var left = tileOrigin.x + x * tileSize.w;
+    var space = window.innerHeight * Grid.spacing;
+    var top = tileOrigin.y + y * (tileSize.h +space);
+    var left = tileOrigin.x + x * (tileSize.w +space);
     var z = 10;
     var r = { x: left, y: top, w: tileSize.w, h: tileSize.h, z:z };
     return r;
@@ -246,7 +247,7 @@ var Grid = {
   },
 
   setStyleNormal : function( id ) {
-    console.log( "set normal: "+id );
+    //console.log( "set normal: "+id );
     var imgDiv = document.getElementById( id );
     var c = Grid.getTileCoord( id );     
     var r = Grid.getTileRect( c.x, c.y );
@@ -260,7 +261,7 @@ var Grid = {
   },
 
   setStyleCurrent : function( id ) {
-    console.log( "set current: "+id );
+    //console.log( "set current: "+id );
     var imgDiv = document.getElementById( id );
     var c = Grid.getTileCoord( id );     
     var r = Grid.getTileRect( c.x, c.y );
@@ -274,7 +275,7 @@ var Grid = {
   },
 
   setStyleSelected : function( id ) {
-    console.log( "set selected: "+id );
+    //console.log( "set selected: "+id );
     var imgDiv = document.getElementById( id );
     
     var f = 1.1;    
