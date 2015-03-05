@@ -10,16 +10,23 @@ var targetCameraY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
-var canvasWidth  = 800;
+// var canvasWidth  = 800;
+// var canvasHeight = 500;
+
+var canvasWidth  = 500;
 var canvasHeight = 500;
 
-var viewportShiftScale = 4;
+var viewportShiftScale = 3.55;
 var headPositionScale = 40;
+
+var jitterCnt = 0;
+var jitterCntInc = 1;
+
 
 function init() {
 
   container = document.getElementById( "viewport" );
-  document.body.appendChild( container );
+  // document.body.appendChild( container );
 
   // scene
 
@@ -28,12 +35,17 @@ function init() {
   var ambient = new THREE.AmbientLight( 0x101010 );
   scene.add( ambient );
 
+  // scene.fog = new THREE.FogExp2( 0xaaaaaa, 0.006 );
+  scene.fog = new THREE.FogExp2( 0x000000, 0.006 );
+
+
   // var directionalLight = new THREE.DirectionalLight( 0xffeedd );
   // directionalLight.position.set( 0, 0, 1 ).normalize();
   // scene.add( directionalLight );
 
   (function(){
-    var light = new THREE.PointLight( 0xffffff, 1, 0 );
+    // var light = new THREE.PointLight( 0xffffff, 1, 0 );
+    var light = new THREE.PointLight( 0xe0e0ff, 1, 0 );
     light.position.set( +30, +30, 100 );
     scene.add( light );
   })();
@@ -43,7 +55,7 @@ function init() {
     scene.add( light );
   })();
   (function(){
-    var light = new THREE.PointLight( 0x808080, 1, 0 );
+    var light = new THREE.PointLight( 0x808020, 1, 0 );
     light.position.set( -30, +30, -30 );
     scene.add( light );
   })();
@@ -66,6 +78,12 @@ function init() {
     // return new THREE.MeshDepthMaterial();
   }
 
+  function flatMaterial( color ) {
+    if( typeof color === 'undefined' ) {
+      color = 0x808080;
+    }
+    return new THREE.MeshBasicMaterial( {color: color} );
+  }
 
 
   // (function(){
@@ -116,32 +134,32 @@ function init() {
   })();
 
   // bevel
-  var size = 115;
-  var bevelColor = 0xffffd0;
-  (function(){
-    var geometry = new THREE.BoxGeometry( 5, size, 100 );
-    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-    obj.position.set( -55, 0, -45 );
-    scene.add( obj );
-  })();
-  (function(){
-    var geometry = new THREE.BoxGeometry( 5, size, 100 );
-    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-    obj.position.set( +55, 0, -45 );
-    scene.add( obj );
-  })();
-  (function(){
-    var geometry = new THREE.BoxGeometry( size, 5, 100 );
-    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-    obj.position.set( 0, -55, -45 );
-    scene.add( obj );
-  })();
-  (function(){
-    var geometry = new THREE.BoxGeometry( size, 5, 100 );
-    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-    obj.position.set( 0, +55, -45 );
-    scene.add( obj );
-  })();
+  // var size = 115;
+  // var bevelColor = 0xffffd0;
+  // (function(){
+  //   var geometry = new THREE.BoxGeometry( 5, size, 100 );
+  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+  //   obj.position.set( -55, 0, -45 );
+  //   scene.add( obj );
+  // })();
+  // (function(){
+  //   var geometry = new THREE.BoxGeometry( 5, size, 100 );
+  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+  //   obj.position.set( +55, 0, -45 );
+  //   scene.add( obj );
+  // })();
+  // (function(){
+  //   var geometry = new THREE.BoxGeometry( size, 5, 100 );
+  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+  //   obj.position.set( 0, -55, -45 );
+  //   scene.add( obj );
+  // })();
+  // (function(){
+  //   var geometry = new THREE.BoxGeometry( size, 5, 100 );
+  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+  //   obj.position.set( 0, +55, -45 );
+  //   scene.add( obj );
+  // })();
 
 
   // sticks out
@@ -208,6 +226,37 @@ function init() {
     scene.add( obj );
   })();
 
+  (function(){
+    var geometry = new THREE.BoxGeometry( 5, 300, 6 );
+    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    obj.position.set( 25, 0, -3 );
+    scene.add( obj );
+  })();
+
+  (function(){
+    var geometry = new THREE.BoxGeometry( 5, 300, 6 );
+    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    obj.position.set( -25, 0, -3 );
+    scene.add( obj );
+  })();
+
+  // White bars
+  // (function(){
+  //   var geometry = new THREE.BoxGeometry( 5, 300, 2 );
+  //   // var geometry = new THREE.PlaneGeometry( 5, 300, 10 );
+  //   var obj = new THREE.Mesh( geometry, flatMaterial( 0xffffff ) );
+  //   obj.position.set( 25, 0, 0 );
+  //   scene.add( obj );
+  // })();
+
+  // (function(){
+  //   var geometry = new THREE.BoxGeometry( 5, 300, 2 );
+  //   // var geometry = new THREE.PlaneGeometry( 5, 300, 10 );
+  //   var obj = new THREE.Mesh( geometry, flatMaterial( 0xffffff ) );
+  //   obj.position.set( -25, 0, 0 );
+  //   scene.add( obj );
+  // })();
+
 
   // floating
   // (function(){
@@ -254,7 +303,7 @@ function init() {
   camera = new THREE.PerspectiveCamera( 45, canvasWidth / canvasHeight, 50, 300 );
   camera.position.x = 0;
   camera.position.y = 0;
-  camera.position.z = 150;
+  camera.position.z = 170;
   
   camera.lookAt( scene.position );
 
@@ -262,9 +311,8 @@ function init() {
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio( window.devicePixelRatio );
-  // renderer.setSize( window.innerWidth, window.innerHeight );
-  renderer.setSize( canvasWidth, canvasHeight );
-
+  renderer.setSize( window.innerHeight*0.9, window.innerHeight*0.9 );
+  
   // renderer.setClearColor( 0xa0a0a0, 1 );
   // renderer.setViewport( 300, 0, window.innerWidth/3, window.innerHeight/3 )
   // camera.setViewOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
@@ -339,8 +387,22 @@ function render() {
     return r;
   }
 
-  camera.position.x += ( targetCameraX - camera.position.x ) * rate(targetCameraX - camera.position.x);
-  camera.position.y += ( targetCameraY - camera.position.y ) * rate(targetCameraY - camera.position.y);
+  cameraX = camera.position.x + ( targetCameraX - camera.position.x ) * rate(targetCameraX - camera.position.x);
+  cameraY = camera.position.y + ( targetCameraY - camera.position.y ) * rate(targetCameraY - camera.position.y);
+
+  // cameraX += jitterCnt * 1.5;
+
+  // jitterCnt += jitterCntInc;
+  
+  // if( jitterCnt > 1 ) {
+  //   jitterCntInc = -1
+  // }  
+  // else if( jitterCnt < 0 ) {
+  //   jitterCntInc = +1
+  // }  
+
+  camera.position.x = cameraX;
+  camera.position.y = cameraY;
 
 
   // var deltaX = (  targetCameraX - camera.position.x ) * 0.04;
@@ -386,12 +448,11 @@ function onXLabsReady() {
   xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
 }
 
-
 function onXLabsUpdate() {
   var x = parseFloat( xLabs.getConfig( "state.head.x" ) );
   var y = parseFloat( xLabs.getConfig( "state.head.y" ) );
 
-  y = y + 0.7;
+  y += 0.7;
 
   // console.log( "y: " + y );
   // console.log( "headPositionScale:" + headPositionScale );
@@ -400,10 +461,16 @@ function onXLabsUpdate() {
   targetCameraY = -y * headPositionScale;
 }
 
-
-
 init();
 animate();
+
+document.getElementById("fullscreen-button").onclick = function(){
+  document.documentElement.webkitRequestFullscreen();
+  document.getElementById("fullscreen").style.display = "none";
+  document.getElementById("main").style.display = "block";
+}
+
+
 
 
 
