@@ -69,6 +69,15 @@ function init() {
     // return new THREE.MeshDepthMaterial();
   }
 
+  function stickMaterial( color ) {
+    if( typeof color === 'undefined' ) {
+      color = 0xff8000;
+    }
+    // return new THREE.MeshLambertMaterial( {color: 0x808080 } );
+    return new THREE.MeshPhongMaterial( {color: color, specular: 0x808080, shininess:0, metal:false } );
+    // return new THREE.MeshDepthMaterial();
+  }
+
   function shinyMaterial( color ) {
     if( typeof color === 'undefined' ) {
       color = 0x808080;
@@ -134,38 +143,38 @@ function init() {
   })();
 
   // bevel
-  // var size = 115;
-  // var bevelColor = 0xffffd0;
-  // (function(){
-  //   var geometry = new THREE.BoxGeometry( 5, size, 100 );
-  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-  //   obj.position.set( -55, 0, -45 );
-  //   scene.add( obj );
-  // })();
-  // (function(){
-  //   var geometry = new THREE.BoxGeometry( 5, size, 100 );
-  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-  //   obj.position.set( +55, 0, -45 );
-  //   scene.add( obj );
-  // })();
-  // (function(){
-  //   var geometry = new THREE.BoxGeometry( size, 5, 100 );
-  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-  //   obj.position.set( 0, -55, -45 );
-  //   scene.add( obj );
-  // })();
-  // (function(){
-  //   var geometry = new THREE.BoxGeometry( size, 5, 100 );
-  //   var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
-  //   obj.position.set( 0, +55, -45 );
-  //   scene.add( obj );
-  // })();
+  var size = 115;
+  var bevelColor = 0xffffd0;
+  (function(){
+    var geometry = new THREE.BoxGeometry( 5, size, 100 );
+    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+    obj.position.set( -55, 0, -45 );
+    scene.add( obj );
+  })();
+  (function(){
+    var geometry = new THREE.BoxGeometry( 5, size, 100 );
+    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+    obj.position.set( +55, 0, -45 );
+    scene.add( obj );
+  })();
+  (function(){
+    var geometry = new THREE.BoxGeometry( size, 5, 100 );
+    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+    obj.position.set( 0, -55, -45 );
+    scene.add( obj );
+  })();
+  (function(){
+    var geometry = new THREE.BoxGeometry( size, 5, 100 );
+    var obj = new THREE.Mesh( geometry, wallMaterial(bevelColor) );
+    obj.position.set( 0, +55, -45 );
+    scene.add( obj );
+  })();
 
 
   // sticks out
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 200 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( -10, -10, -50 );    
     scene.add( obj );
   })();
@@ -185,35 +194,35 @@ function init() {
 
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 80 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( +30, 10, -50 );
     scene.add( obj );
   })();
 
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 70 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( -10, +30, -50 );
     scene.add( obj );
   })();
 
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 50 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( -30, +20, -50 );
     scene.add( obj );
   })();
 
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 30 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( +30, -35, -70 );
     scene.add( obj );
   })();
 
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 70 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( +5, -25, -50 );
     scene.add( obj );
   })();
@@ -221,7 +230,7 @@ function init() {
 
   (function(){
     var geometry = new THREE.BoxGeometry( 5, 5, 20 );
-    var obj = new THREE.Mesh( geometry, wallMaterial() );
+    var obj = new THREE.Mesh( geometry, stickMaterial() );
     obj.position.set( -30, -35, -70 );
     scene.add( obj );
   })();
