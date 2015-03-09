@@ -112,18 +112,14 @@ var Guide = {
     var hasNoFace = Errors.hasNoFace();
 
     if( state == Guide.STATE_GAZE ) {
-console.log( "state = gaze" );
       var stopGaze = false;
       if( hasNoFace ) {   
-console.log( "no face" );
         stopGaze = true;
       }
       else if( timeElapsed ) { 
-console.log( "no time" );
         stopGaze = true;
       }
       else if( hasBadPose ) {
-console.log( "bad pose" );
         stopGaze = true;
       }
 
