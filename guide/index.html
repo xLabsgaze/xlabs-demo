@@ -1,0 +1,67 @@
+<html>
+ <head>
+  <title>xLabs: Gaze Tracking Calibration Demo</title>
+ </head>
+ <body>
+
+  <div id="about">
+   <h1>xLabs: Gaze Tracking Calibration Demo</h1>
+   <p>This page uses gaze tracking to browse a palette of colours. You'll see them after you calibrate.</p>
+   <p>In this demo, you calibrate the gaze-tracking system by clicking on some circles and moving your head in response to instructions.</p>
+   <p>After completing 5 circles, you will see the colour palette and use gaze-tracking to explore it.</p>
+   <button id="start" style="color: #FFF; background-color: #900; border: 1px solid #900; font-weight: bold;font-size: 150%; text-transform: uppercase; margin: 20px; z-index:999; position:relative">Start</button>
+  </div>
+
+  <div id="graph">
+  </div>
+
+  <div id="video" style="display:none; text-align:center;">
+    <video id='xLabsPreview' ></video>
+  </div>
+
+  <div id="target" style="display: none; position: absolute; top: 0; left:0; width:100%; height:100%; z-index:3;" >
+    <svg height="100%" width="100%" style="display:block; position:absolute; top:0; left:0; width:100%; height:100%; z-index:4;" >
+     <circle id="bgCircle" cx="300" cy="300" r="90" stroke-width="5" stroke="#d5d5d5" fill="#EEE"/>
+     <circle id="cCircle" cx="300" cy="300" r="9" stroke-width="3" stroke="#555" fill="#555" style="z-index:5;"/>
+     <circle id="hCircle" cx="390" cy="300" r="30" stroke-width="6" stroke="#CC6600" stroke-opacity="1" fill="rgba( 0,0,0,0 )"/>
+     <circle id="tCircle" cx="390" cy="300" r="40" stroke-width="6" stroke="#555" stroke-opacity="1" fill="rgba( 0,0,0,0 )"/>
+     <circle id="xCircle" cx="300" cy="300" r="40" stroke-width="0" fill="#CC6600"/>
+     <text id="text" x="300" y="300" fill="#fff" style="alignment-baseline:middle; text-anchor:middle; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: bold;font-size: 200%; z-index:6;" >Click</text>
+     <!-- http://www.pindari.com/svg-arc.html 
+     <path id="arc" fill="none" stroke="#000000" d="M 210 300 A 90 90 0 0 1 390 300"/>  -->
+    </svg>
+  </div>
+  <div id="pose" style="display: none; position: absolute; top: 0; left:0; width:100%; height:100%; z-index:3;" >
+    <svg height="100%" width="100%" style="display:block; position:absolute; top:0; left:0; width:100%; height:100%; z-index:4;" >
+     <rect id="faceRect" x="300" y="300" width="100" height="100" stroke-width="4" stroke="#FF0000" fill="rgba( 0,0,0,0 )"/>
+    </svg>
+  </div>
+
+  <div id="messageButton" style="position: absolute; top: 40%; left:0%; width:100%; height:10%;" >
+    <p class="message" id="message" style="display:none; text-align:center; color: #000; background-color: #EEE; border: none; padding:8px; border-radius: 5px; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: bold;font-size: 200%; margin: 20px; z-index:8; ">blah blah</p>
+    <input id="button" type="button" value="xxxx" style="display:none; position:relative; margin: 20px auto; color: #FFFFFF; background-color: #CC6600; border:none; padding:8px; border-radius: 5px; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: bold;font-size: 200%; z-index:9; "/>
+  </div>
+  
+  <script type="text/javascript" src="../colours/js/libs/d3.v3.min.js"> </script>
+  <script type="text/javascript" src="../colours/js/libs/queue.v1.min.js"> </script>
+  <script>window.jQuery || document.write('<script src="../colours/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+
+  <script type="text/javascript" src="../api/xlabs.js"></script>
+  <script type="text/javascript" src="../useful/util.js"></script>
+  <script type="text/javascript" src="../useful/state.js"></script>
+  <script type="text/javascript" src="../useful/timer.js"></script>
+  <script type="text/javascript" src="../useful/canvas.js"></script>
+  <script type="text/javascript" src="../useful/errors.js"></script>
+  <script type="text/javascript" src="../useful/mouse.js"></script>
+  <script type="text/javascript" src="../useful/gaze.js"></script>
+  <script type="text/javascript" src="../useful/head.js"></script>
+  <!--<script type="text/javascript" src="../useful/grid.js"></script>-->
+  <script type="text/javascript" src="../colours/graph.js"> </script>
+  <script type="text/javascript" src="targets.js"></script>
+  <script type="text/javascript" src="points.js"></script>
+  <script type="text/javascript" src="graphics.js"></script>
+  <script type="text/javascript" src="camera.js"></script>
+  <script type="text/javascript" src="guide.js"></script>
+ </body>
+</html>
+
