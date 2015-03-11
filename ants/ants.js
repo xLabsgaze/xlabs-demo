@@ -85,6 +85,7 @@ XLabsAnts = function() {
     this.addAntInterval = 1000;
 
     this.squishStateTime = 1000;
+    this.movingAnimationFrameDistancePixels = 10;
 
 
     // this.validGaze = false;
@@ -138,9 +139,13 @@ XLabsAnts.prototype.addRandomAnt = function() {
 
 XLabsAnts.prototype.init = function( onReady ) {
     resources.load([
-        './img/ant_100x100.png',
         './img/ant_100x100_squish.png'
     ]);
+
+    for( i = 0; i < 4; ++i ) {
+        resources.load(['./img/ant_100x100_moving2_'+i+'.png']);
+    }
+
 
     Gaze.xyLearningRate = 0.8;
 
@@ -212,7 +217,7 @@ XLabsAnts.prototype.update = function() {
 
 
     // Add more ants
-    if( this.ants.length < 10 ) {
+    if( this.ants.length < 1 ) {
         if( this.lastAddAnt === null ) {
             this.lastAddAnt = Date.now();
         }
@@ -320,6 +325,7 @@ XLabsAnts.ant = function() {
     this.vy = null; // pixels per msec
     this.state = ANT_STATE_MOVING;
     this.stateStartTime = Date.now();
+    this.distanceMoved = 0;
 }
 
 XLabsAnts.ant.prototype.update = function( xLabsAnts, interval ) {
@@ -334,6 +340,8 @@ XLabsAnts.ant.prototype.update = function( xLabsAnts, interval ) {
     else if( this.state === ANT_STATE_MOVING ) {
         var vx = interval * this.vx;
         var vy = interval * this.vy;
+
+        this.distanceMoved += Math.sqrt(vx*vx + vy*vy);
 
         this.x += vx;
         this.y += vy;
@@ -368,7 +376,10 @@ XLabsAnts.ant.prototype.render = function( xLabsAnts ) {
         Canvas.context.rotate( rad );
 
         if( this.state === ANT_STATE_MOVING ) {
-            var img = resources.get("./img/ant_100x100.png");
+            var frameIdx = Math.floor( this.distanceMoved / xLabsAnts.movingAnimationFrameDistancePixels );
+            frameIdx = frameIdx % 4;
+            var img = resources.get("./img/ant_100x100_moving2_"+frameIdx+".png");
+            console.log( img.src );
         }
         else if( this.state === ANT_STATE_SQUISHED ) {
             var img = resources.get("./img/ant_100x100_squish.png");
