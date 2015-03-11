@@ -10,6 +10,8 @@ var Gaze = {
   available : false,
 
   // Gaze
+  xMeasuredSmoothed : 0.0,
+  yMeasuredSmoothed : 0.0,
   xSmoothed : 0.0,
   ySmoothed : 0.0,
   cSmoothed : 0.0, 
@@ -18,6 +20,7 @@ var Gaze = {
    cLearningRate : 0.05,
 
   update : function() {
+    Gaze.available = false;
     var trackingSuspended = parseInt( xLabs.getConfig( "state.trackingSuspended" ) );
     var calibrationStatus = parseInt( xLabs.getConfig( "calibration.status" ) );
 
@@ -26,12 +29,16 @@ var Gaze = {
       return;
     }
 
-    var x = parseFloat( xLabs.getConfig( "state.gaze.estimate.x" ) ); // screen coords
-    var y = parseFloat( xLabs.getConfig( "state.gaze.estimate.y" ) ); // screen coords
+    Gaze.available = true;
+
+    var xMeasured = parseFloat( xLabs.getConfig( "state.gaze.measured.x" ) ); // screen coords
+    var yMeasured = parseFloat( xLabs.getConfig( "state.gaze.measured.y" ) ); // screen coords
+    var xEstimate = parseFloat( xLabs.getConfig( "state.gaze.estimate.x" ) ); // screen coords
+    var yEstimate = parseFloat( xLabs.getConfig( "state.gaze.estimate.y" ) ); // screen coords
     var c = parseFloat( xLabs.getConfig( "state.calibration.confidence" ) ); 
 
-    x = Math.max( 0, Math.min( screen. width-1, x ) );
-    y = Math.max( 0, Math.min( screen.height-1, y ) );
+    xEstimate = Math.max( 0, Math.min( screen. width-1, xEstimate ) );
+    yEstimate = Math.max( 0, Math.min( screen.height-1, yEstimate ) );
 
     // condition c into a continuous unit value
     if( c > Gaze.maxConfidence ) {
@@ -41,8 +48,10 @@ var Gaze = {
     var cUnit = c / Gaze.maxConfidence;
 
     // smooth these measurements
-    Gaze.xSmoothed = Util.lerp( Gaze.xSmoothed, x, Gaze.xyLearningRate );
-    Gaze.ySmoothed = Util.lerp( Gaze.ySmoothed, y, Gaze.xyLearningRate );
+    Gaze.xMeasuredSmoothed = Util.lerp( Gaze.xMeasuredSmoothed, xMeasured, Gaze.xyLearningRate );
+    Gaze.yMeasuredSmoothed = Util.lerp( Gaze.yMeasuredSmoothed, yMeasured, Gaze.xyLearningRate );
+    Gaze.xSmoothed = Util.lerp( Gaze.xSmoothed, xEstimate, Gaze.xyLearningRate );
+    Gaze.ySmoothed = Util.lerp( Gaze.ySmoothed, yEstimate, Gaze.xyLearningRate );
     Gaze.cSmoothed = Util.lerp( Gaze.cSmoothed, cUnit, Gaze.cLearningRate );
   },
  

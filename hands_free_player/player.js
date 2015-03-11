@@ -47,9 +47,9 @@ var xLabsPlayer = {
 
             xLabsPlayer.mouseInsideTop = 0;
 
-            window.onbeforeunload = function() {
+            window.addEventListener( "beforeunload", function() {
                 xLabs.setConfig( "system.mode", "off" );
-            }
+            });
         }
         else {
             document.getElementById( "youtube_addr_txt" ).value = "https://www.youtube.com/watch?v=5uXIPhxL5XA"
