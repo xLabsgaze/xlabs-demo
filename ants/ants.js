@@ -85,7 +85,7 @@ XLabsAnts = function() {
     this.addAntInterval = 1000;
 
     this.squishStateTime = 1000;
-    this.movingAnimationFrameDistancePixels = 10;
+    this.movingAnimationFrameDistancePixels = 12;
 
 
     // this.validGaze = false;
@@ -217,7 +217,7 @@ XLabsAnts.prototype.update = function() {
 
 
     // Add more ants
-    if( this.ants.length < 1 ) {
+    if( this.ants.length < 10 ) {
         if( this.lastAddAnt === null ) {
             this.lastAddAnt = Date.now();
         }
