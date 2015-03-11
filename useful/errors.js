@@ -91,8 +91,10 @@ var Errors = {
   hasBadPoseY : function() {
     var y = parseFloat( xLabs.getConfig( "state.head.y" ) );
     var t = parseFloat( xLabs.getConfig( "algorithm.validation.headCentreDistanceThreshold" ) );
-    return Errors.distanceThreshold( 0.0, y, t );
+    return Errors.distanceThreshold( Errors.yHeadIdeal, y, t );
   },
+
+  yHeadIdeal : -0.5,
 
   freqError : function( frequency ) {
 //    var threshold = 0.15; // e.g. 0.15 = 15%
@@ -103,7 +105,7 @@ var Errors = {
   },
 
   distanceThreshold : function( xh, yh, threshold ) {
-    var d = Util.distance( 0.0, 0.0, xh, yh );
+    var d = Util.distance( 0.0, Errors.yHeadIdeal, xh, yh );
     if( d > threshold ) {
       return true;
     }
