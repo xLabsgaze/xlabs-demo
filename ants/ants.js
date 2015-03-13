@@ -82,6 +82,7 @@ XLabsAnts = function() {
     this.ants = [];
     this.lastUpdate = null;
     this.lastAddAnt = null;
+    this.lastSquish = Date.now();
     this.addAntInterval = 1000;
 
     this.squishStateTime = 1000;
@@ -212,13 +213,38 @@ XLabsAnts.prototype.render = function() {
     x = xLabs.scr2docX( x );
     y = xLabs.scr2docY( y );
 
+    var squished = false;
+
+    var elapsed = Date.now() - this.lastSquish;
+    if( elapsed < 200 ) {
+        squished = true;
+    }
+
     // gaze feedback
     if( Gaze.available ) {
-        // Canvas.context.strokeStyle = "rgba( 255, 128, 0, 0.4 )"
-        Canvas.context.strokeStyle = "rgba( 0, 0, 0, 1.0 )"
-        Canvas.context.beginPath();
-        Canvas.context.arc( x, y, 20, 0, 2 * Math.PI, false );
-        Canvas.context.stroke();
+        if( squished ) {
+          Canvas.context.strokeStyle = "rgba( 255, 200, 0, 0.7 )";
+          Canvas.context.beginPath();
+          Canvas.context.fillStyle = "rgba( 255, 245, 0, 0.3 )";
+          Canvas.context.arc( x, y, this.gazeCatchment, 0, 2 * Math.PI, false );
+          Canvas.context.fill();
+          Canvas.context.beginPath();
+          Canvas.context.fillStyle = "rgba( 255, 220, 0, 0.3 )";
+          Canvas.context.arc( x, y, this.gazeCatchment * 0.7, 0, 2 * Math.PI, false );
+          Canvas.context.fill();
+          Canvas.context.beginPath();
+          Canvas.context.fillStyle = "rgba( 255, 190, 0, 0.3 )";
+          Canvas.context.arc( x, y, this.gazeCatchment * 0.2, 0, 2 * Math.PI, false );
+          Canvas.context.fill();
+        }
+        else {
+          // Canvas.context.strokeStyle = "rgba( 255, 128, 0, 0.4 )"
+          Canvas.context.strokeStyle = "rgba( 0, 0, 255, 1 )"
+          Canvas.context.lineWidth = "1"
+          Canvas.context.beginPath();
+          Canvas.context.arc( x, y, 25, 0, 2 * Math.PI, false );
+          Canvas.context.stroke();
+        }
     }
 }
 
@@ -242,9 +268,14 @@ XLabsAnts.prototype.squishAt = function( x, y, catchment ) {
         var dy = y - ant.y;
         // console.log( x )
 
-        if( dx*dx + dy*dy < dThresh ) {
+        if( ant.state == ANT_STATE_SQUISHED ) {
+            return;
+        }
+ 
+        if( (dx*dx + dy*dy) < dThresh ) {
             ant.state = ANT_STATE_SQUISHED;
             ant.stateStartTime = Date.now();
+            self.lastSquish = Date.now();
         }
     }
 
