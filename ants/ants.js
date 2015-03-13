@@ -101,7 +101,7 @@ XLabsAnts.prototype.addRandomAnt = function() {
 
 XLabsAnts.prototype.init = function( onReady ) {
     resources.load([
-        './img/frame_squish.gif'
+        './img/frame_squish.png'
     ]);
 
     for( i = 0; i < this.NUM_ANT_WALKING_FRAMES; ++i ) {
@@ -372,7 +372,7 @@ XLabsAnts.ant.prototype.render = function( xLabsAnts ) {
             console.log( img.src );
         }
         else if( this.state === ANT_STATE_SQUISHED ) {
-            var img = resources.get("./img/frame_squish.gif");
+            var img = resources.get("./img/frame_squish.png");
         }
 
         Canvas.context.drawImage( img,
