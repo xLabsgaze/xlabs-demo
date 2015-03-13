@@ -85,49 +85,10 @@ XLabsAnts = function() {
     this.addAntInterval = 1000;
 
     this.squishStateTime = 1000;
-    this.movingAnimationFrameDistancePixels = 12;
+    this.movingAnimationFrameDistancePixels = 10;
 
-
-    // this.validGaze = false;
-    // this.gazeX = null;
-    // this.gazeY = null;
+    this.NUM_ANT_WALKING_FRAMES = 4;
 }
-
-// XLabsAnts.prototype.addFullScreenCanvas = function(canvasId, zIndex) {
-    // // canvas element (usually invisible graphical overlay)
-    // this.canvas = document.createElement( 'canvas' );
-    // this.canvas.id = canvasId;
-    // this.canvas.width = window.innerWidth;
-    // this.canvas.height = window.innerHeight;
-    // this.canvas.style.background = "0"
-    // this.ctx = this.canvas.getContext( "2d" );
-
-    // // add these UI tools to the document:    
-    // var style = document.createElement( 'style' ); // style - positions the canvas element and makes it 'click throughable' 
-    // if(typeof zIndex === 'undefined') {
-    //     var zIndex = "";
-    // }
-    // else {
-    //     zIndex = "z-index:" + zIndex;
-    // }
-    // var styleString = '';
-    // styleString += 'html,body{padding:0;margin:0;}';
-    // styleString += '#'+canvasId+'{pointer-events:none;top:0;left:0;position:fixed;'+zIndex+'}';
-    // // canvasStyleString += '#'+canvasIx+'.allow-pointer{pointer-events:auto;}';
-    // var rules = document.createTextNode(styleString);
-    // style.type = 'text/css';
-
-    // if( style.styleSheet ) {
-    //   style.styleSheet.cssText = rules.nodeValue;
-    // }
-    // else {zIndex
-    //   style.appendChild( rules );
-    // }
-
-    // var head = document.getElementsByTagName( 'head' )[0];
-    // head.appendChild( style );
-    // document.getElementsByTagName('body')[ 0 ].appendChild( this.canvas );
-// }
 
 XLabsAnts.prototype.addRandomAnt = function() {
     this.addAnt(
@@ -139,15 +100,15 @@ XLabsAnts.prototype.addRandomAnt = function() {
 
 XLabsAnts.prototype.init = function( onReady ) {
     resources.load([
-        './img/ant_100x100_squish.png'
+        './img/frame_squish.gif'
     ]);
 
-    for( i = 0; i < 4; ++i ) {
-        resources.load(['./img/ant_100x100_moving2_'+i+'.png']);
+    for( i = 0; i < this.NUM_ANT_WALKING_FRAMES; ++i ) {
+        resources.load(['./img/frame_00'+i+'.gif']);
     }
 
 
-    Gaze.xyLearningRate = 0.8;
+    Gaze.xyLearningRate = 1.0; //0.8;
 
     // this.addFullScreenCanvas("antsCanvas");
     Canvas.add();
@@ -292,8 +253,6 @@ XLabsAnts.prototype.squishAt = function( x, y, catchment ) {
 
 XLabsAnts.prototype.updateGaze = function() {    
     Gaze.update();
-    // this.gazeX = parseInt( xLabs.getConfig( 'state.gaze.measured.x' ) );
-    // this.gazeY = parseInt( xLabs.getConfig( 'state.gaze.measured.y' ) );
 
     if( !xLabs.documentOffsetReady() ) {
         return;
@@ -373,16 +332,16 @@ XLabsAnts.ant.prototype.render = function( xLabsAnts ) {
     if( this.state !== ANT_STATE_REMOVE ) {
         Canvas.context.save();
         Canvas.context.translate( this.x, this.y );
-        Canvas.context.rotate( rad );
+        Canvas.context.rotate( rad + Math.PI );
 
         if( this.state === ANT_STATE_MOVING ) {
             var frameIdx = Math.floor( this.distanceMoved / xLabsAnts.movingAnimationFrameDistancePixels );
-            frameIdx = frameIdx % 4;
-            var img = resources.get("./img/ant_100x100_moving2_"+frameIdx+".png");
+            frameIdx = frameIdx % xLabsAnts.NUM_ANT_WALKING_FRAMES;
+            var img = resources.get("./img/frame_00"+frameIdx+".gif");
             console.log( img.src );
         }
         else if( this.state === ANT_STATE_SQUISHED ) {
-            var img = resources.get("./img/ant_100x100_squish.png");
+            var img = resources.get("./img/frame_squish.gif");
         }
 
         Canvas.context.drawImage( img,
@@ -403,24 +362,25 @@ XLabsAnts.ant.prototype.render = function( xLabsAnts ) {
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
 
-window.addEventListener( "beforeunload", function() {
-    xLabs.setConfig( "system.mode", "off" );
-});
-
-window.myAnts = null;
-
 function onXlabsReady() {
+    window.addEventListener( "beforeunload", function() {
+        xLabs.setConfig( "system.mode", "off" );
+    });
     xLabs.setConfig( "system.mode", "learning" );
     xLabs.setConfig( "browser.canvas.paintLearning", "0" );
 
-    window.myAnts = new XLabsAnts();
-    window.myAnts.init( function() {
-        document.addEventListener( "click", function(e) { window.myAnts.onClick(e); } );
-        window.myAnts.mainLoop();
+    ants = new XLabsAnts();
+    ants.init( function() {
+        document.addEventListener( "click", function(e) { ants.onClick(e); } );
+        ants.mainLoop();
     });
 }
 
-xLabs.setup( onXlabsReady, function() { window.myAnts.updateGaze(); } );
+function onXlabsUpdate() {
+    ants.updateGaze();
+}
+
+xLabs.setup( onXlabsReady, onXlabsUpdate );
 
 
 
