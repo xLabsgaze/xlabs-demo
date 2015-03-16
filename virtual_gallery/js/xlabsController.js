@@ -33,9 +33,6 @@ xLabs.webCamController = function(){
     // document.addEventListener( "xLabsApiReady", function(){self.onApiReady();});
     // document.addEventListener( "xLabsApiState", function( event ){self.onApiState(event.detail);});
     xLabs.setup( function(){ self.onApiReady(); }, function(){ self.onApiState(); } );
-    $(window).bind("beforeunload", function() {
-        xLabs.setConfig( "system.mode", "off" );
-    })
 }
 
 xLabs.webCamController.prototype = {
@@ -70,6 +67,9 @@ xLabs.webCamController.prototype = {
         this.isFaceDetected = !Errors.hasNoFace();
     },
     onApiReady : function(){
+        window.addEventListener( "beforeunload", function() {
+            xLabs.setConfig( "system.mode", "off" );
+        });
         xLabs.setConfig( "system.mode", "head" );
         xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
     },

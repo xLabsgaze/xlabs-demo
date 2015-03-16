@@ -30,6 +30,10 @@ var xLabsPlayer = {
         xLabsPlayer.videoId = parseQueryVariable(  window.location.href, 'v' );
 
         if( xLabsPlayer.videoId ) {
+            window.addEventListener( "beforeunload", function() {
+                xLabs.setConfig( "system.mode", "off" );
+            });
+
             xLabs.setConfig( "system.mode", "head" );
             xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
 
@@ -46,10 +50,6 @@ var xLabsPlayer = {
             document.getElementById( "youtube_addr_txt" ).value = "https://www.youtube.com/watch?v=" + xLabsPlayer.videoId;
 
             xLabsPlayer.mouseInsideTop = 0;
-
-            window.addEventListener( "beforeunload", function() {
-                xLabs.setConfig( "system.mode", "off" );
-            });
         }
         else {
             document.getElementById( "youtube_addr_txt" ).value = "https://www.youtube.com/watch?v=5uXIPhxL5XA"
