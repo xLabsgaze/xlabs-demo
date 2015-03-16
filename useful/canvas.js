@@ -21,7 +21,7 @@ var Canvas = {
 
   resize : function() {
     var devicePixelRatio = xLabs.devicePixelRatio();
-    if( !devicePixelRatio ) {
+    if( !devicePixelRatio && xLabs.extensionInstalled() ) {
       console.log( 'xLabs.devicePixelRatio() not ready, will check again' );
       setTimeout( Canvas.resize, 100 ); // check again till it's valid
       return;

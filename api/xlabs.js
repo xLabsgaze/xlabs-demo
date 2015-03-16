@@ -246,6 +246,16 @@ var xLabs = {
     }
   },
 
+  extensionInstalled : function(withAlert) {
+    var ok = !!document.getElementById("xLabs-chrome-extension-installed");
+    if( !ok ) {
+      if( withAlert ) {
+        alert("xLabs chrome extension is not installed");
+      }
+    }
+    return ok;
+  },
+
   setup : function( callbackReady, callbackState, callbackIdPath ) {
     xLabs.callbackReady = callbackReady;
     xLabs.callbackState = callbackState;
@@ -271,6 +281,8 @@ document.addEventListener( "xLabsApiState", function( event ) {
 document.addEventListener( "xLabsApiIdPath", function( event ) {
   xLabs.onApiIdPath( event.detail );
 } );
+
+xLabs.extensionInstalled(true);
 
 // Usage: xLabs.setup( myCallbackFnReady, myCallbackFnState );
 
