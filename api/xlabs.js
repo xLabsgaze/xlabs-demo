@@ -145,6 +145,19 @@ var xLabs = {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Coordinate conversion
   ///////////////////////////////////////////////////////////////////////////////////////////////////
+  devicePixelRatio : function() {
+    var ratio = xLabs.getConfig("browser.screen.devicePixelRatioWithoutZoom")
+    if( !ratio ) {
+      return null
+    }
+    var ratio = parseInt( ratio );
+    if( ratio === 0 ) {
+      return null;
+    }
+    return window.devicePixelRatio / ratio;
+  },
+
+
   documentOffset : function() {
     if( !xLabs.documentOffsetReady() ) {
       throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";

@@ -20,11 +20,17 @@ var Canvas = {
   },
 
   resize : function() {
-      //console.log( "Resizing overlay canvas" );
-      Canvas.element.width  = (window.innerWidth +0) * window.devicePixelRatio;
-      Canvas.element.height = (window.innerHeight+0) * window.devicePixelRatio;
-      Canvas.element.style.width  = window.innerWidth +0 + "px";
-      Canvas.element.style.height = window.innerHeight+0 + "px";
+    var devicePixelRatio = xLabs.devicePixelRatio();
+    if( !devicePixelRatio ) {
+      console.log( 'xLabs.devicePixelRatio() not ready, will check again' );
+      setTimeout( Canvas.resize, 100 ); // check again till it's valid
+      return;
+    }
+    //console.log( "Resizing overlay canvas" );
+    Canvas.element.width  = (window.innerWidth +0) * devicePixelRatio;
+    Canvas.element.height = (window.innerHeight+0) * devicePixelRatio;
+    Canvas.element.style.width  = window.innerWidth +0 + "px";
+    Canvas.element.style.height = window.innerHeight+0 + "px";
   },
 
   setTimeout : function() {

@@ -77,6 +77,9 @@ XLabsAnts = function() {
     this.boxH = Math.min( window.innerWidth, window.innerHeight );
     this.boxW = Math.min( window.innerWidth, this.boxH * 1.2 );
 
+    //this.mouseX = null;
+    //this.mouseY = null;
+
     // this.canvas = null;
     // this.ctx = null;
     this.ants = [];
@@ -207,6 +210,12 @@ XLabsAnts.prototype.render = function() {
         squished = true;
     }
 
+    //Canvas.context.beginPath();
+    //Canvas.context.fillStyle = "rgba( 0, 0, 255, 0.7 )";
+    //Canvas.context.arc( this.mouseX, this.mouseY, 30, 0, 2 * Math.PI, false );
+    //Canvas.context.fill();
+
+
     // gaze feedback
     if( Gaze.available ) {
         if( squished ) {
@@ -241,7 +250,9 @@ XLabsAnts.prototype.removeAnt = function( idx ) {
 
 
 XLabsAnts.prototype.onClick = function( e ) {
-    this.squishAt( e.clientX, e.clientY, this.clickCatchment );
+    if( xLabs.documentOffsetReady() ) {
+        this.squishAt( xLabs.scr2docX(e.screenX), xLabs.scr2docY(e.screenY), this.clickCatchment );
+    }
 }
 
 XLabsAnts.prototype.squishAt = function( x, y, catchment ) {
@@ -386,6 +397,12 @@ function onXlabsReady() {
     ants = new XLabsAnts();
     ants.init( function() {
         document.addEventListener( "click", function(e) { ants.onClick(e); } );
+        // document.addEventListener( "mousemove", function(e) {
+        //     if( xLabs.documentOffsetReady() ) {
+        //         ants.mouseX = xLabs.scr2docX(e.screenX)
+        //         ants.mouseY = xLabs.scr2docY(e.screenY)
+        //     }
+        // });
         ants.mainLoop();
     });
 }
