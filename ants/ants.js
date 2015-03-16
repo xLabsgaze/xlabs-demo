@@ -139,19 +139,6 @@ XLabsAnts.prototype.addAnt = function( x, y, vx, vy ) {
     ant.y = y;
     ant.vx = vx;
     ant.vy = vy;
-
-    console.log( ant.x )
-    console.log( ant.y )
-    console.log( ant.vx )
-    console.log( ant.vy )
-
-    // ant.imgElement = resources.get("./img/ant_100x100.png").cloneNode();
-    // ant.imgElement.style.position = "absolute";
-    // ant.imgElement.style.left = "300px";
-    // ant.imgElement.style.top = "300px";
-    // var body = document.getElementsByTagName( 'body' )[0];
-    // body.appendChild( ant.imgElement );
-
     this.ants.push(ant);
 }
 
@@ -266,7 +253,6 @@ XLabsAnts.prototype.squishAt = function( x, y, catchment ) {
     function perAnt(ant, idx) {
         var dx = x - ant.x;
         var dy = y - ant.y;
-        // console.log( x )
 
         if( ant.state == ANT_STATE_SQUISHED ) {
             return;
@@ -350,8 +336,6 @@ XLabsAnts.ant.prototype.update = function( xLabsAnts, interval ) {
             || ( this.vy > 0 && this.y >= bottom ) ) {
             this.vy = this.vy * -1;
         }
-        // console.log( this.x );
-        // console.log( this.y );
     }
 }
 
@@ -369,7 +353,6 @@ XLabsAnts.ant.prototype.render = function( xLabsAnts ) {
             var frameIdx = Math.floor( this.distanceMoved / xLabsAnts.movingAnimationFrameDistancePixels );
             frameIdx = frameIdx % xLabsAnts.NUM_ANT_WALKING_FRAMES;
             var img = resources.get("./img/frame_00"+frameIdx+".gif");
-            console.log( img.src );
         }
         else if( this.state === ANT_STATE_SQUISHED ) {
             var img = resources.get("./img/frame_squish.png");
