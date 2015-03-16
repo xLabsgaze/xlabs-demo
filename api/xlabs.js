@@ -257,6 +257,10 @@ var xLabs = {
   },
 
   setup : function( callbackReady, callbackState, callbackIdPath ) {
+    if( !xLabs.extensionInstalled(true) ) {
+      return;
+    }
+
     xLabs.callbackReady = callbackReady;
     xLabs.callbackState = callbackState;
     xLabs.callbackIdPath = callbackIdPath;
@@ -281,8 +285,6 @@ document.addEventListener( "xLabsApiState", function( event ) {
 document.addEventListener( "xLabsApiIdPath", function( event ) {
   xLabs.onApiIdPath( event.detail );
 } );
-
-xLabs.extensionInstalled(true);
 
 // Usage: xLabs.setup( myCallbackFnReady, myCallbackFnState );
 
