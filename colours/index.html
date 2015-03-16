@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+  <script type="text/javascript" src="./js/libs/d3.v3.min.js"> </script>
+  <script type="text/javascript" src="./js/libs/queue.v1.min.js"> </script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+</head>
+<body>
+  <h1>Bubble Colours Demo</h1>
+  <div id="graphParent"></div>
+  <script type="text/javascript" src="graph.js"> </script>
+  <script type="text/javascript"> 
+    var colours = "colours_dark.json";
+    Graph.setup( "graphParent", colours, true );
+    Graph.show();
+  </script>
+</body>
+</html>
