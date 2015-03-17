@@ -6,7 +6,7 @@ var Gaze = {
 
   gazeMinSize : 90,
   gazeMaxScreenFrac : 0.5,
-  maxConfidence : 10.0,
+  maxConfidence : 8.0, // for simplePoly: 8.0, for compoundPoly: 10.0,
   available : false,
 
   // Gaze
