@@ -246,18 +246,14 @@ var xLabs = {
     }
   },
 
-  extensionInstalled : function(withAlert) {
-    var ok = !!document.getElementById("xLabs-chrome-extension-installed");
-    if( !ok ) {
-      if( withAlert ) {
-        alert("xLabs chrome extension is not installed");
-      }
-    }
-    return ok;
+  // Returns the version number of the extension, or null if extension not installed.
+  extensionVersion : function() {
+    return document.documentElement.getAttribute('data-xlabs-extension-version');
   },
 
   setup : function( callbackReady, callbackState, callbackIdPath ) {
-    if( !xLabs.extensionInstalled(true) ) {
+    if( !xLabs.extensionVersion() ) {
+      alert("xLabs chrome extension is not installed");
       return;
     }
 
