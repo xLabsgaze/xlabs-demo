@@ -74,8 +74,8 @@ XLabsAnts = function() {
     this.antSize = 50;
     this.clickCatchment = 70;
     this.gazeCatchment = 100;
-    this.boxH = Math.min( window.innerWidth, window.innerHeight );
-    this.boxW = Math.min( window.innerWidth, this.boxH * 1.4 );
+    this.boxH = Math.min( screen.width * 0.8, screen.height * 0.8 );
+    this.boxW = Math.min( screen.width * 0.8, this.boxH * 1.4 );
 
     //this.mouseX = null;
     //this.mouseY = null;
