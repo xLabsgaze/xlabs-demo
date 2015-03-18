@@ -8,7 +8,8 @@ var Targets = {
   INSET : 0.05,
   LOCATION_X_TO_Y_RATIO : 4/3,
   RADIUS_FRAC_OF_HEIGHT : 0.09,// fraction of DPI scaled pie size
-  INSET_FRAC_OF_HEIGHT : 0.13,// fraction of DPI scaled pie size
+  TOP_INSET_FRAC_OF_HEIGHT : 0.13,// fraction of DPI scaled pie size
+  BOTTOM_INSET_FRAC_OF_HEIGHT : 0.2,// fraction of DPI scaled pie size
   HEAD_FRAC_OF_HEIGHT : 0.03,// fraction of DPI scaled pie size
   HEAD_DISTANCE_THRESHOLD : 1.2, //0.8,
   HEAD_DISTANCE_FACTOR : 5.0,//3.0,//1.5,
@@ -47,15 +48,16 @@ var Targets = {
 
     var x = ( screen.width * 0.5 ) + xRel -( xyOffset.x + window.screenX );
     var y = 0;
-    var r = Targets.getInset();//( ( Targets.INSET_FRAC_OF_HEIGHT * screen.height ) * 0.5 );//Targets.getRadius();
+    var rTop    = Targets.getTopInset();
+    var rBottom = Targets.getBottomInset();
     
     // push the targets to fit within the visible area of screen.
     if( yFrac < 0.3 ) {
-      y = r +xyOffset.y - ( xyOffset.y + window.screenY );//window.screenY + xyOffset.y
+      y = rTop +xyOffset.y - ( xyOffset.y + window.screenY );//window.screenY + xyOffset.y
     }
     else if( yFrac > 0.7 ) {
-      y =              screen.height * yFrac    -( xyOffset.y + window.screenY );
-      y = Math.min( y, screen.height         -r -( xyOffset.y + window.screenY ) );
+      y =              screen.height * yFrac          -( xyOffset.y + window.screenY );
+      y = Math.min( y, screen.height         -rBottom -( xyOffset.y + window.screenY ) );
     }
     else { // centre
       y = screen.height * yFrac    -( xyOffset.y + window.screenY );
@@ -64,10 +66,16 @@ var Targets = {
     return { x: x, y: y };
   },
 
-  getInset : function( idx ) {
-    var r = screen.height * Targets.INSET_FRAC_OF_HEIGHT;
+  getTopInset : function( idx ) {
+    var r = screen.height * Targets.TOP_INSET_FRAC_OF_HEIGHT;
     return r;
   },
+  
+  getBottomInset : function( idx ) {
+    var r = screen.height * Targets.BOTTOM_INSET_FRAC_OF_HEIGHT;
+    return r;
+  },
+
   getRadius : function( idx ) {
     var r = screen.height * Targets.RADIUS_FRAC_OF_HEIGHT;
     return r;
