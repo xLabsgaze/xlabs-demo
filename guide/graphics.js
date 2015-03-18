@@ -4,14 +4,16 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 var Graphics = {
 
+  faceCentred : false,
+  faceCentredDebounceTimeout : null,
+  faceCentredDebounceInterval : 300, // msec
+
   // Styles
   hidePose : function() {
     $( "#pose" ).css( {"display":"none"} );
   },
   showPose : function() {
     $( "#pose" ).css( {"display":"block"} );
-
-    var faceRect = $( "#faceRect" )[0];
 
     var x0 = 100;
     var y0 = 100;
@@ -33,27 +35,96 @@ var Graphics = {
     var videoElement = document.getElementById( "xLabsPreview" );
     var videoRect = videoElement.getBoundingClientRect();
 
-    var dx = fw * dilationX;
-    var dy = fh * dilationY;
+    faceCircleRadius = videoRect.height/10;
 
-    fx = fx - dx;
-    fy = fy - dy;
-    fw = fw + (dx*2);    
-    fh = fh + (dy*2);    
+    //???
+    // The ideal rectangle.
+    var idealW = faceCircleRadius;
+    var idealH = faceCircleRadius;
+    var idealX = videoRect.left + videoRect.width /2 - idealW/2;
+    var idealY = videoRect.top  + videoRect.height/2 - idealH/2;
+
+    // var idealFaceRect = $( "#idealFaceRect" )[0];
+    // idealFaceRect.setAttribute( 'width',  idealW );
+    // idealFaceRect.setAttribute( 'height', idealH );
+    // idealFaceRect.setAttribute( 'x', idealX );
+    // idealFaceRect.setAttribute( 'y', idealY );
+    // idealFaceRect.setAttribute( 'stroke', "rgba( 0,0,255,0.5 )" );
+
+    size = videoRect.height/3;
+    var idealCrossair1 = $( "#idealCrossair1" )[0];
+    idealCrossair1.setAttribute( 'x1', idealX+idealW/2-size/2 );
+    idealCrossair1.setAttribute( 'y1', idealY+idealH/2 );
+    idealCrossair1.setAttribute( 'x2', idealX+idealW/2+size/2 );
+    idealCrossair1.setAttribute( 'y2', idealY+idealH/2 );
+    idealCrossair1.setAttribute( 'stroke', "rgba( 255,255,255,1.0 )" );
+
+    var idealCrossair2 = $( "#idealCrossair2" )[0];
+    idealCrossair2.setAttribute( 'x1', idealX+idealW/2 );
+    idealCrossair2.setAttribute( 'y1', idealY+idealH/2-size/2 );
+    idealCrossair2.setAttribute( 'x2', idealX+idealW/2 );
+    idealCrossair2.setAttribute( 'y2', idealY+idealH/2+size/2 );
+    idealCrossair2.setAttribute( 'stroke', "rgba( 255,255,255,1.0 )" );
+
+    fx = fx + fw/2;
+    fy = fy + fh/2;
     fx = fx + videoRect.left;
     fy = fy + videoRect.top;
 
-    faceRect.setAttribute( "x", fx );
-    faceRect.setAttribute( "y", fy );
-    faceRect.setAttribute( "width", fw );
-    faceRect.setAttribute( "height", fh );
-
-    var stroke = "rgba( 255,255,255,0.7 )"
-    if( Errors.hasBadPose() ) {
-      stroke = "rgba( 255,0,0,0.7 )";
+    // See if face is within the ideal rect
+    var stroke = "rgba( 255,255,255,0.5 )"
+    if(    fx >= idealX && fx <= idealX+idealW
+        && fy >= idealY && fy <= idealY+idealH ) {
+      stroke = "rgba( 0,255,0,0.5 )";
+      Graphics.faceCentredDebounceTimeout = setTimeout( function() {
+        Graphics.faceCentred = true;
+      }, Graphics.faceCentredDebounceInterval );
+    }
+    else {
+      clearTimeout( Graphics.faceCentredDebounceTimeout );
+      Graphics.faceCentred = false;
     }
 
-    faceRect.setAttribute( "stroke", stroke );
+    // Face crossair
+    var faceCircle = $( "#faceCircle" )[0];
+    faceCircle.setAttribute( "cx", fx );
+    faceCircle.setAttribute( "cy", fy );
+    faceCircle.setAttribute( "r", faceCircleRadius );
+    faceCircle.setAttribute( "stroke", stroke );
+
+
+
+    // Face rectangle
+    // var faceRect = $( "#faceRect" )[0];
+
+    // var dx = fw * dilationX;
+    // var dy = fh * dilationY;
+
+    // fx = fx - dx;
+    // fy = fy - dy;
+    // fw = fw + (dx*2);    
+    // fh = fh + (dy*2);    
+    // fx = fx + videoRect.left;
+    // fy = fy + videoRect.top;
+
+    // var size = videoRect.width/20
+    // fx = fx + fw/2 - size/2
+    // fy = fy + fh/2 - size/2
+    // fw = size
+    // fh = size
+
+    // faceRect.setAttribute( "x", fx );
+    // faceRect.setAttribute( "y", fy );
+    // faceRect.setAttribute( "width", fw );
+    // faceRect.setAttribute( "height", fh );
+
+    // // See if face is within the ideal rect
+    // var stroke = "rgba( 255,255,255,0.7 )"
+    // if(    fx >= idealX && fx+fw <= idealX+idealW
+    //     && fy >= idealY && fy+fh <= idealY+idealH ) {
+    //   stroke = "rgba( 0,255,0,0.7 )";
+    // }
+    // faceRect.setAttribute( "stroke", stroke );
   },
 
   hideTarget : function() {
@@ -117,7 +188,14 @@ var Graphics = {
     $( "#button" ).css( {"display":"none"} );
   },
 
-  showMessage : function( text, buttonText, isError ) {
+  showMessage : function( text, buttonText, isError, yPosition ) {
+    if( typeof(yPosition)==='undefined') yPosition = "40%";
+    $( "#messageButton" ).css( {"top": yPosition } );
+
+    if( !text ) {
+      Graphics.hideMessage();
+      return;
+    }
     $( "#message" ).css( {"display":"block"} );
     $( "#message" )[0].innerHTML = text;
 

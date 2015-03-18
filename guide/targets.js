@@ -10,8 +10,8 @@ var Targets = {
   RADIUS_FRAC_OF_HEIGHT : 0.09,// fraction of DPI scaled pie size
   INSET_FRAC_OF_HEIGHT : 0.13,// fraction of DPI scaled pie size
   HEAD_FRAC_OF_HEIGHT : 0.03,// fraction of DPI scaled pie size
-  HEAD_DISTANCE_THRESHOLD : 0.8,
-  HEAD_DISTANCE_FACTOR : 3.0,//1.5,
+  HEAD_DISTANCE_THRESHOLD : 1.2, //0.8,
+  HEAD_DISTANCE_FACTOR : 5.0,//3.0,//1.5,
 
   TARGET_VALUE_DEFAULT : 0,
   TARGET_VALUE_MOUSEOVER : 1,

@@ -150,20 +150,22 @@ var Guide = {
 
     if( state == Guide.STATE_POSE ) {
       // -- fix it, then we show the button. advance on click
-      if( hasError ) {
+      // if( hasError ) {
+      //   Guide.timer.reset(); // hold it in this state until after x seconds after fixing it
+      //   Guide.state.setState( Guide.STATE_ERROR ); // go back to previous state
+      // }
+      // else
+      // if( hasBadPose ) {
+      if( !Graphics.faceCentred ) {
         Guide.timer.reset(); // hold it in this state until after x seconds after fixing it
-        Guide.state.setState( Guide.STATE_ERROR ); // go back to previous state
-      }
-      else if( hasBadPose ) {
-        Guide.timer.reset(); // hold it in this state until after x seconds after fixing it
-        Graphics.showMessage( "Move the camera so your face is in the middle of the image.", null, false );
+        Graphics.showMessage( "Move the camera so your face is in the middle of the image.", null, false, "70%" );
         Graphics.showPose();
       }
       else { // no errors
         Graphics.showPose();
 
         if( timeElapsed ) {
-          Graphics.showMessage( "Looks good!", "Next", false );
+          Graphics.showMessage( "Looks good!", "Next", false, "70%" );
         }
         else { // don't show button until timeout
           Graphics.hideMessage();
@@ -231,7 +233,7 @@ var Guide = {
     var state = Guide.state.getState();
     //console.log( "State changed to: " + Guide.state.getState() );
 
-         if( state == Guide.STATE_ERROR ) {
+    if( state == Guide.STATE_ERROR ) {
       Canvas.hide();
       Guide.aboutHide();
     }
@@ -242,7 +244,7 @@ var Guide = {
       Guide.aboutShow();
     }
     else if( state == Guide.STATE_COMFORT ) {
-      xLabs.setConfig( "system.mode", "training" );
+      xLabs.setup( Guide.onXlabsReady, Guide.onXlabsState );
       Canvas.hide();
       Guide.aboutHide();
     }
@@ -285,6 +287,7 @@ var Guide = {
   // Key events
   start : function() {
     Guide.state.setState( Guide.STATE_COMFORT );
+    xLabs.setConfig( "calibration.clear", "1" ); // this also clears the memory buffer
   },
 
   paint : function() {
@@ -345,7 +348,7 @@ var Guide = {
 
   // xLabs API
   onXlabsReady : function() {
-    //xLabs.setConfig( "system.mode", "training" ); defer til they click "start"
+    xLabs.setConfig( "system.mode", "training" );
   },
   onXlabsState : function() {
     Errors.update();
@@ -354,6 +357,10 @@ var Guide = {
 
   // Setup
   setup : function() {
+    window.addEventListener( "beforeunload", function() {
+        xLabs.setConfig( "system.mode", "off" );
+    });
+
     var colours = "../colours/colours_dark.json";
     Graph.setup( "graph", colours, false );
 
@@ -375,7 +382,7 @@ var Guide = {
     document.getElementById( "cCircle" ).addEventListener( "click", Guide.onTargetClicked );
     document.getElementById( "text" ).addEventListener( "click", Guide.onTargetClicked );
 
-    xLabs.setup( Guide.onXlabsReady, Guide.onXlabsState );
+    // xLabs.setup( Guide.onXlabsReady, Guide.onXlabsState );
   }
 
 };
