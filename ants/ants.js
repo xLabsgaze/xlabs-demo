@@ -391,6 +391,8 @@ function onXlabsReady() {
     window.addEventListener( "beforeunload", function() {
         xLabs.setConfig( "system.mode", "off" );
     });
+
+    xLabs.setConfig( "calibration.clear", "1" ); // this also clears the memory buffer
     xLabs.setConfig( "system.mode", "learning" );
     xLabs.setConfig( "browser.canvas.paintLearning", "0" );
 

@@ -269,7 +269,7 @@ var Donut = {
 
   // xLabs API
   onXlabsReady : function() {
-    //xLabs.setConfig( "system.mode", "training" );
+    xLabs.setConfig( "calibration.clear", "1" ); // this also clears the memory buffer
   },
   onXlabsState : function() {
     Errors.update();
