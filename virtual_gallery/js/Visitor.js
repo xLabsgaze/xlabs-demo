@@ -184,6 +184,8 @@ xLabs.Visitor.prototype = {
             self.startMov = true;
             // Hide the loading screen
             document.getElementById("loading").style.display = 'none';
+            // Show main display
+            document.getElementById("container").style.display = 'block';
         });
     },
     initTrack : function(){
