@@ -48,6 +48,11 @@ var Gaze = {
     var cUnit = c / Gaze.maxConfidence;
 
     // smooth these measurements
+    if( isNaN( Gaze.xSmoothed         ) ) Gaze.xSmoothed = screen.width * 0.5;
+    if( isNaN( Gaze.ySmoothed         ) ) Gaze.ySmoothed = screen.height * 0.5;
+    if( isNaN( Gaze.xMeasuredSmoothed ) ) Gaze.xMeasuredSmoothed = screen.width * 0.5;
+    if( isNaN( Gaze.yMeasuredSmoothed ) ) Gaze.yMeasuredSmoothed = screen.height * 0.5;
+    
     Gaze.xMeasuredSmoothed = Util.lerp( Gaze.xMeasuredSmoothed, xMeasured, Gaze.xyLearningRate );
     Gaze.yMeasuredSmoothed = Util.lerp( Gaze.yMeasuredSmoothed, yMeasured, Gaze.xyLearningRate );
     Gaze.xSmoothed = Util.lerp( Gaze.xSmoothed, xEstimate, Gaze.xyLearningRate );
