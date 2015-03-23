@@ -45,18 +45,24 @@
     <!--<div id="left"></div>-->
     <!--<div id="right"></div>-->
     <!--<div id="zoom"></div>-->
-    <div id="container"></div>
+    <div id="container" style="display:none;"></div>
 	<!--<div id="instructions_overlay" style="background:url(assets/image/3DViewer_screen_shot_temp.png) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; position: absolute; z-index:5000"></div>-->
 	<div id="help_overlay" style="opacity:0.0; display:none; position:fixed; top: 0%; left: 0%; width: 100%; height: 100%;">
 		<center><img src="assets/image/instructions.png" alt="" style="width:50%; height:50%;"></center>
     </div>	
-    <div id="loading" style="display:block">
-        <div id='xLabsDivOuter' style='position:fixed; left:0; top:50%; width:100%; background-color:white;'>
-            <center>
-                Loading...
-            </center>
-        </div>
+    <div id="extension-check" style="display: none; position:absolute; top:30%; width:100%; text-align:center;">
+        <h1 style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+            Please install the <a href="http://xlabsgaze.com/download/">xLabs chrome extension.</a>
+        </h1>
     </div>
+    <div id="loading" class="parentbox" style="display:block; background-color:black; z-index:100;" >
+        <div class="childbox">
+            <!-- <img src="assets/image/loading.gif" alt="" /> -->
+            <h1 style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+                <font color="white">Loading...</font>
+            </h1>
+        </div>
+    </div>    
 </body>
 </html>
 

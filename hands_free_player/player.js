@@ -22,7 +22,6 @@ var xLabsPlayer = {
 
     onApiReady : function() {
 
-        document.getElementById("no_plugin").style.display = 'none';
         document.getElementById("top").style.display = 'block';
         document.getElementById("top").style.backgroundColor = "rgba(0,0,0,0.5)";
 
@@ -44,7 +43,6 @@ var xLabsPlayer = {
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            document.getElementById("no_plugin").style.display = 'none';
             document.getElementById("descr").style.display = 'none';
 
             document.getElementById( "youtube_addr_txt" ).value = "https://www.youtube.com/watch?v=" + xLabsPlayer.videoId;
@@ -70,7 +68,7 @@ var xLabsPlayer = {
 
         var rollDeg = roll * 180/Math.PI;
 
-       console.log( "roll (deg): " + rollDeg );
+       // console.log( "roll (deg): " + rollDeg );
 
         /*
         player.getPlayerState():Number
@@ -127,17 +125,6 @@ var xLabsPlayer = {
     }
 
 };
-
-
-var isChrome = navigator.userAgent.toLowerCase().indexOf( 'chrome' ) >= 0;
-
-if( !isChrome ) {
-    document.getElementById("not_chrome").style.display = 'block';
-}
-else {
-    // make no plugin message visible by default, will be removed once plugin loads
-    document.getElementById("no_plugin").style.display = 'block';
-}
 
 xLabs.setup( xLabsPlayer.onApiReady, xLabsPlayer.onApiState );
 

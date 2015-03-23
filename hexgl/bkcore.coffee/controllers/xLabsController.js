@@ -8,7 +8,6 @@ xLabsController = {
     setupDone : false,
 
     onReady : function() {
-        document.getElementById("extension-check").style.display = "none";
         document.getElementById("step-1").style.display = "block";
 
         console.log( "xLabsController.onReady()" )
@@ -25,7 +24,12 @@ xLabsController = {
         if( !xLabsController.setupDone ) {
             console.log( "xLabsController.setup()" )
             xLabsController.setupDone = true;
-            xLabs.setup( xLabsController.onReady, xLabsController.onUpdate );
+            if( !xLabs.extensionVersion() ) {
+                document.getElementById("extension-check").style.display = "block";
+            }
+            else {
+                xLabs.setup( xLabsController.onReady, xLabsController.onUpdate );
+            }
         }
     },
     close : function() {
