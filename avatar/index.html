@@ -171,7 +171,7 @@
 				// disappears too quickly it feels the software is glitchy
 				setTimeout( function() {
 					document.getElementById('loading-button').style.display = "none";
-					document.getElementById('fullscreen-button').style.display = "inline";
+					document.getElementById('start-button').style.display = "inline";
 				}, 2000 )
 			}
 
@@ -804,19 +804,19 @@
     <div id="fullscreen" style="background:#000000; display:block; position:fixed; top: 0%; left: 0%; width: 100%; height: 100%;">
       <div style="position: relative; top: 50%; transform: translateY(-50%); text-align:center;">
         <button class="btn" id="loading-button" style="display:inline; background:gray;">Loading...</button>
-        <button class="btn" id="fullscreen-button" style="display:none">Start</button>
+        <button class="btn" id="start-button" style="display:none">Start</button>
         <br/><br/><br/>
         Original version by: <a href="http://alteredqualia.com/" target="_blank">http://alteredqualia.com/</a>
       </div>
     </div>
 
 	<script>
-		document.getElementById("fullscreen-button").onclick = function(){
+		document.getElementById("start-button").onclick = function(){
 		  // Reset origins now since user is looking at the button at the center
 		  // of the screen
 		  headOriginX = null;
 		  headOriginY = null;
-		  document.documentElement.webkitRequestFullscreen();
+		  // document.documentElement.webkitRequestFullscreen();
 		  document.getElementById("fullscreen").style.display = "none";
 		  document.getElementById("main").style.display = "block";
 		}
