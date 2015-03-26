@@ -5,9 +5,8 @@
   // http://stackoverflow.com/questions/9901565/charge-based-on-size-d3-force-layout
 
   var params = {
-    radius : 108,//screen.height * 0.1,
+    radius : 108,
     distanceThreshold : 150,
-//    force : screen.height * 10.0,//25.0,
     force : 1080 * 10.0,//25.0,
     friction : 0.8,
     gravity : 0.3,
@@ -97,8 +96,83 @@
         else if( classValue == 'med' ) {
           return -params.force * 0.5;
         } 
+        else if( classValue == 'tiny' ) {
+          return -params.force * 0.25;
+        } 
       }
       return -params.force * 0.1;
+    },
+
+    getCountCircles : function() {
+      var circles = $("#"+Graph.id+" circle" );
+      return circles.length;    
+    },
+
+    getCountCircleClass : function( countClassValue ) {
+      var circles = $("#"+Graph.id+" circle" );
+      var count = 0;
+
+      for( var i = 0; i < circles.length; i++ ) {
+        var classValue = circles[ i ].getAttribute( 'class' );
+        if( classValue == countClassValue ) {
+          count = count +1;
+        }
+      }
+
+      return count;
+    },
+
+    hideCircleAt : function( x, y, rScale ) {
+      //console.log( "hide @"+x+","+y );
+      var circles = $("#"+Graph.id+" circle" );
+      var dMin = screen.width * screen.width;
+      var iMin = 0;
+
+      for( var i = 0; i < circles.length; i++ ) {
+        var cx = parseFloat( circles[ i ].getAttribute( 'cx' ) );
+        var cy = parseFloat( circles[ i ].getAttribute( 'cy' ) );
+        var r  = parseFloat( circles[ i ].getAttribute( 'r' ) );
+        var dx = x - cx;
+        var dy = y - cy;
+        var d = Math.sqrt( dx * dx + dy * dy );
+        var t = ( r * rScale );
+        if( d < t ) {
+          circles[ i ].setAttribute( 'r', 2 );
+          circles[ i ].setAttribute( 'class', "tiny" );
+        }
+      }
+    },
+
+    showCircleRandom : function( p ) {
+      var circles = $("#"+Graph.id+" circle" );
+
+      var near = [];
+
+      for( var i = 0; i < circles.length; i++ ) {
+        var classValue = circles[ i ].getAttribute( 'class' );
+        if( classValue == "tiny" ) {
+          near.push( i );
+        }
+      }
+
+      if( near.length < 1 ) {
+        return;
+      }
+
+      if( Math.random() > p ) {
+        return;
+      }
+
+      var iRandom = Graph.getRandomInteger( 0, near.length -1 );
+
+      var c = near[ iRandom ];
+      //console.log( "inflate: "+iRandom+" c="+c );
+      circles[ c ].setAttribute( 'class', "small" );
+    },
+
+    getRandomInteger : function( intMin, intMax ) {
+      var intRandom = ( Math.floor( Math.random() * ( intMax - intMin +1 ) ) + intMin );
+      return intRandom;
     },
 
     updateSelection : function( x, y ) {
@@ -123,20 +197,36 @@
         }
       }
 
+      Graph.update( iMin, near );
+    },
+
+    updateWithoutSelection : function() {
+      Graph.update( -1, [] );
+    },
+
+    update : function( selectedCircleIndex, nearbyCircleIndices ) {
       var small = params.radius * 0.5;//20;
       var med = params.radius * 0.75;
       var big = params.radius;
 
+      var circles = $("#"+Graph.id+" circle" );
+
       for( var i = 0; i < circles.length; i++ ) {
+
+        var classValue = circles[ i ].getAttribute( 'class' );
+        if( classValue == "tiny" ) {
+          continue;
+        }
+
         var radius = small;
         var classValue = "small";
-        if( i == iMin ) {
+        if( i == selectedCircleIndex ) {
           radius = big;
           classValue = "big";
         }
         else {
-          for( var j = 0; j < near.length; j++ ) {
-            if( i == near[ j ] ) {
+          for( var j = 0; j < nearbyCircleIndices.length; j++ ) {
+            if( i == nearbyCircleIndices[ j ] ) {
               radius = med;
               classValue = "med";
             }
@@ -149,6 +239,7 @@
         var t = Graph.labels[0][ i ];
         t.style[ "font-size" ] = fontSize+"px";
       }
+
       Graph.forceLayout.start(); // restart the force due to new constraints
     },
 
