@@ -1,0 +1,72 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        color:#fff;
+        background:#000;
+        padding:0;
+        margin:0;
+        font-weight: bold;
+        font-family:Monospace;
+        font-size:13px;
+      }
+
+      a { color: #ffffff; }
+
+      #info {
+        position: absolute;
+        top: 0px; width: 100%;
+        color: #ffffff;
+        padding: 5px 0px;
+        text-align:center;
+        z-index:1000;
+      }
+
+      #oldie {
+        background:rgb(200,100,0) !important;
+        color:#fff;
+      }
+
+      #loading { background: #0af; color: white; padding: 0.25em 1em; position: absolute; right:0px; top: 0px; z-index: 200; }
+
+      #stats { position: absolute; top: 5px; left: 5px; }
+      #stats #fps { background: transparent !important }
+      #stats #fps #fpsText { color: #aaa !important }
+      #stats #fps #fpsGraph { display: none }
+    </style>
+      <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+
+  <body>
+    <div id="fullscreen" style="background:#000000; display:block; position:fixed; top: 0%; left: 0%; width: 100%; height: 100%;">
+      <div style="position: relative; top: 50%; transform: translateY(-50%); text-align:center;">
+        <img src="images/scann3d_logo.png"/><br/>
+        <p id="loading-text" style="display:block;">Loading...</p>
+        <button class="btn" id="start-button" style="display:none">Start</button>
+      </div>
+    </div>
+
+
+    <script src="js/lib/three.min.js"></script>
+
+    <script src="js/lib/DDSLoader.js"></script>
+    <script src="js/lib/MTLLoader.js"></script>
+    <script src="js/lib/OBJMTLLoader.js"></script>
+
+    <script src="js/lib/Detector.js"></script>
+    <script src="js/lib/stats.min.js"></script>
+
+    <script src="../api/xlabs.js"></script>
+    <script src="../useful/util.js"></script>
+    <!-- <script src="../useful/timer.js"></script> -->
+    <!-- <script src="../useful/canvas.js"></script> -->
+    <script src="../useful/head.js"></script>
+    <script src="js/main.js"></script>
+
+  </body>
+</html>
