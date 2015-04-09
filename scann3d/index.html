@@ -40,15 +40,17 @@
       #stats #fps #fpsGraph { display: none }
     </style>
       <link rel="stylesheet" type="text/css" href="style.css">
+      <!-- <link rel="stylesheet" type="text/css" href="hover.css"> -->
   </head>
 
   <body>
-    <div id="fullscreen" style="background:#000000; display:block; position:fixed; top: 0%; left: 0%; width: 100%; height: 100%;">
+    <div id="fullscreen" style="background:#ec5b23; display:block; position:fixed; top: 0%; left: 0%; width: 100%; height: 100%;">
       <div style="position: relative; top: 50%; transform: translateY(-50%); text-align:center;">
-        <img src="images/scann3d_logo.png"/><br/>
+        <img src="images/Scann3d Logo Inversed.png" style="width:25%"/><br/>
         <!-- <img src="images/xlabs_logo.png"/><br/> -->
-        <p id="loading-text" style="display:block;">Loading...</p>
-        <button class="btn" id="start-button" style="display:none">Start</button>
+        <p id="loading-text" style="display:block;"></p>
+        <!-- <a href="#" id="start-button" class="hvr-ripple-out">Step Inside</a> -->
+        <button class="btn hvr-ripple-out" id="start-button" style="display:none;">Step inside</button>
       </div>
     </div>
 
@@ -67,6 +69,9 @@
     <!-- <script src="../useful/timer.js"></script> -->
     <!-- <script src="../useful/canvas.js"></script> -->
     <script src="../useful/head.js"></script>
+    <script src="../useful/errors.js"></script>
+    <script src="../useful/canvas.js"></script>
+    <script src="../useful/timer.js"></script>
     <script src="js/main.js"></script>
 
   </body>

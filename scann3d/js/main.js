@@ -12,6 +12,60 @@ var xlabsUpdateEnabled = false;
 
 var pointLight = null;
 
+var STATE_NO_FACE = "no-face";
+var STATE_INIT_HEAD = "init-head";
+var STATE_HEAD_CONTROL = "head-control";
+
+var state = STATE_NO_FACE;
+var stateTimer = new Timer();
+
+
+function paintInit() { 
+  
+  var ctx = Canvas.context;
+
+  // paints the initialization cue - a shrinking circle that forces the view to the centre
+  ctx.fillStyle = "rgba(236, 91, 35, 1.0)";
+  ctx.beginPath();    
+  ctx.rect( 0,0, ctx.canvas.width, ctx.canvas.height );
+  ctx.fill();
+
+  var oldMode = ctx.globalCompositeOperation;
+  ctx.globalCompositeOperation = 'destination-out';
+
+  var xy = { x:window.innerWidth/2, y:window.innerHeight/2 };
+  var d = Math.sqrt( screen.width*screen.width + screen.height*screen.height );
+  var frac = stateTimer.elapsedFrac();
+
+  var radiusMin = screen.height/20;
+  var radiusMax = d/2;
+  if( frac < 0.6 ) { // shrink
+    frac = frac / 0.6; // scale from 0 to 1
+    var radius = ( 1 - frac ) * ( radiusMax - radiusMin ) + radiusMin;
+  }
+  else if( frac < 0.8 ) { // dwell a little bit
+    // console.log( "Dwelling" );
+    resetHeadOrigin();
+    var radius = radiusMin;
+  }
+  else { // expand
+    frac = (frac-0.8)/0.2; // scale from 0 to 1
+    var radius = frac * ( radiusMax - radiusMin ) + radiusMin;
+  }
+
+  // console.log( "Timer elapsedFrac(): " + stateTimer.elapsedFrac() );
+
+  ctx.fillStyle = "rgba(255, 255, 255, 1.0)";
+  ctx.beginPath();
+  ctx.arc( xy.x, xy.y, radius, 0, 2 * Math.PI, false);
+  ctx.fill();
+
+  ctx.globalCompositeOperation = oldMode;
+}
+
+
+
+
 function resetCamera() {
   return {
     distance: 20,
@@ -40,9 +94,12 @@ function init() {
   (function loadingAnimation() {
     setTimeout( loadingAnimation, 1000 );
     var loading = document.getElementById("loading-text");
-    if( loading.innerHTML == "Loading.  " ) loading.innerHTML = "Loading.. ";
-    else if( loading.innerHTML == "Loading.. " ) loading.innerHTML = "Loading...";
-    else if( loading.innerHTML == "Loading..." ) loading.innerHTML = "Loading.  ";
+    var L1 = "Loading.&nbsp;&nbsp;";
+    var L2 = "Loading..&nbsp;";
+    var L3 = "Loading...";
+    if( loading.innerHTML == L1 ) loading.innerHTML = L2;
+    else if( loading.innerHTML == L2 ) loading.innerHTML = L3;
+    else loading.innerHTML = L1;
   })();
 
 
@@ -86,7 +143,7 @@ function init() {
   var objPath = "assets/reformatted/5f6bb418ef684068b14121badd1a8c76.obj";
   var mtlPath = "assets/reformatted/5f6bb418ef684068b14121badd1a8c76.obj.mtl"
   loader.load( objPath, mtlPath, function ( object ) {
-    console.log( object )
+    // console.log( object )
     object.position.set( 0, 0, -2 );
     object.rotation.set( rad(-90), 0, 0, "XYZ");
     scene.add( object );
@@ -149,12 +206,13 @@ function animate() {
   requestAnimationFrame( animate );
   update();
   render();
-
 }
 
 function render() {
 
-  camera.lookAt( scene.position );
+  if( state == STATE_INIT_HEAD ) {
+    paintInit();
+  }
 
   renderer.render( scene, camera );
 
@@ -164,6 +222,38 @@ var lastUpdate = null;
 
 
 function update() {
+
+  if( !xlabsUpdateEnabled ) {
+    return;
+  }
+
+  if( Errors.hasNoFace() ) {
+    state = STATE_NO_FACE;
+    xlCamera.azmimuthRate = 10;
+    xlCamera.elevationRate = 0;
+    xlCamera.elevation = 45;
+    // console.log( "state: STATE_NO_FACE" );
+  }
+  else if( state == STATE_NO_FACE ) {
+    // A face just came into view.
+    stateTimer.setDuration( 6000 );
+    stateTimer.reset();
+    state = STATE_INIT_HEAD;
+    xlCamera.azmimuthRate = 0;
+    xlCamera.elevationRate = 0;
+    // console.log( "state: STATE_INIT_HEAD" );
+  }
+  else if( state == STATE_INIT_HEAD ) {
+    if( stateTimer.hasElapsed() ) {
+      state = STATE_HEAD_CONTROL;
+      // console.log( "state: STATE_HEAD_CONTROL" );
+    }
+  }
+  
+  updateCameraPosition();
+}
+
+function updateCameraPosition() {
 
   if( lastUpdate === null ) {
     lastUpdate = Date.now();
@@ -197,7 +287,7 @@ function update() {
   camera.position.y = y
   camera.position.z = z
 
-  // pointLight.position.set( camera.position );
+  camera.lookAt( scene.position );
 
 }
 
@@ -239,7 +329,7 @@ var headOriginQueue = {x:[], y:[]};
 var headOriginLength = 10;
 
 function resetHeadOrigin() {
-  xlCamera = resetCamera();
+  // xlCamera = resetCamera();
   Head.reset();
   headOriginQueue = {x:[], y:[]};
 }
@@ -250,6 +340,8 @@ function onXLabsUpdate() {
     return;
   }
 
+  Errors.update();
+
   var x = parseFloat( xLabs.getConfig( "state.head.x" ) );
   var y = parseFloat( xLabs.getConfig( "state.head.y" ) );
 
@@ -259,8 +351,8 @@ function onXLabsUpdate() {
     console.log( headOriginQueue.x.length );
     if( headOriginQueue.x.length >= headOriginLength ) {
 
-      console.log( headOriginQueue.x );
-      console.log( headOriginQueue.y );
+      // console.log( headOriginQueue.x );
+      // console.log( headOriginQueue.y );
 
       Head.xHeadOrigin = findMedian( headOriginQueue.x )
       Head.yHeadOrigin = findMedian( headOriginQueue.y )
@@ -291,7 +383,7 @@ function onXLabsUpdate() {
       dx = head.x + X_THRESH;
     }
 
-    var azmimuthRate = dx * X_GAIN;
+    var azmimuthRate = -dx * X_GAIN;
 
     if( azmimuthRate > AZIMUTH_MAX_RATE ) {
       azmimuthRate = AZIMUTH_MAX_RATE
