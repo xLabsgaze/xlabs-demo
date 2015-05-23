@@ -152,7 +152,7 @@ var xLabs = {
   // Coordinate conversion
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   devicePixelRatio : function() {
-    var ratio = xLabs.getConfig("browser.screen.devicePixelRatioWithoutZoom")
+    var ratio = parseFloat( xLabs.getConfig("browser.screen.devicePixelRatioWithoutZoom") );
     if( !ratio ) {
       return null
     }
@@ -186,7 +186,7 @@ var xLabs = {
       throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
 
-    var xOffset = xLabs.getConfig( "browser.document.offset.x" );
+    var xOffset = parseInt(xLabs.getConfig( "browser.document.offset.x" ));
     return screenX - window.screenX - xOffset;
   },
 
@@ -195,7 +195,7 @@ var xLabs = {
       throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
 
-    var yOffset = xLabs.getConfig( "browser.document.offset.y" );
+    var yOffset = parseInt(xLabs.getConfig( "browser.document.offset.y" ));
     return screenY - window.screenY - yOffset;
   },
 
@@ -210,7 +210,7 @@ var xLabs = {
     if( !xLabs.documentOffsetReady() ) {
       throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
-    var xOffset = xLabs.getConfig( "browser.document.offset.x" );
+    var xOffset = parseInt(xLabs.getConfig( "browser.document.offset.x" ));
     return documentX + window.screenX + xOffset;
   },
 
@@ -218,7 +218,7 @@ var xLabs = {
     if( !xLabs.documentOffsetReady() ) {
       throw "xLabs: Should not call scr2doc() unless mouse moved, i.e. browser.document.offset.ready == 1";
     }
-    var yOffset = xLabs.getConfig( "browser.document.offset.y" );
+    var yOffset = parseInt(xLabs.getConfig( "browser.document.offset.y" ));
     return documentY + window.screenY + yOffset;
   },
 
