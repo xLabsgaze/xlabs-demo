@@ -4,6 +4,7 @@ var xLabs = {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Variables
   ///////////////////////////////////////////////////////////////////////////////////////////////////
+  token : null, // cached locally because it's inconvenient to send every time and for backwards compatibility
   config : null,
   callbackReady : null,
   callbackState : null,
@@ -26,11 +27,16 @@ var xLabs = {
   setConfig : function( path, value ) {
     window.postMessage( { 
       target: "xLabs", 
+      token: xLabs.token, // may be null
       config: { 
         path: path, 
         value: value
       } 
     }, "*" );
+  },
+
+  setToken : function( token ) {
+    xLabs.token = token;
   },
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////

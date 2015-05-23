@@ -88,6 +88,7 @@ console.log( "frac="+  fractionClicked  );
 
     document.getElementById( "start" ).onclick = Balloons.start;
 
+    xLabs.setToken( "myToken" );
     xLabs.setup( Balloons.onXlabsReady, Balloons.onXlabsState );
   }
 

@@ -356,6 +356,7 @@ function init() {
   })();
 
   // setup xlabs
+  xLabs.setToken( "myToken" );
   xLabs.setup( onXLabsReady, onXLabsUpdate );
 }
 

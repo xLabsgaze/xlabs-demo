@@ -28,6 +28,7 @@ xLabsController = {
                 document.getElementById("extension-check").style.display = "block";
             }
             else {
+                xLabs.setToken( "myToken" );
                 xLabs.setup( xLabsController.onReady, xLabsController.onUpdate );
             }
         }

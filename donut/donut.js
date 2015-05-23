@@ -292,6 +292,7 @@ var Donut = {
     Pies.allPiesVisitedCallback = Donut.onCalibrationComplete;
     document.getElementById( "start" ).onclick = Donut.start;
 
+    xLabs.setToken( "myToken" );
     xLabs.setup( Donut.onXlabsReady, Donut.onXlabsState );
   }
 
