@@ -19,6 +19,10 @@ var STATE_HEAD_CONTROL = "head-control";
 var state = STATE_NO_FACE;
 var stateTimer = new Timer();
 
+var resetTimer = new Timer();
+resetTimer.setDuration( 2500 ); // when person absent 2.5 second, only then reset head origin
+
+var progress = 0;
 
 function paintInit() { 
   
@@ -92,14 +96,16 @@ function init() {
 
   // Animate loading text  
   (function loadingAnimation() {
-    setTimeout( loadingAnimation, 1000 );
-    var loading = document.getElementById("loading-text");
-    var L1 = "Loading.&nbsp;&nbsp;";
-    var L2 = "Loading..&nbsp;";
-    var L3 = "Loading...";
-    if( loading.innerHTML == L1 ) loading.innerHTML = L2;
-    else if( loading.innerHTML == L2 ) loading.innerHTML = L3;
-    else loading.innerHTML = L1;
+    setTimeout( loadingAnimation, 500 );
+    var loadingElement = document.getElementById("loading-text");
+    loadingElement.innerHTML = progress + "% complete";
+
+//    var L1 = "Loading.&nbsp;&nbsp;";
+//    var L2 = "Loading..&nbsp;";
+//    var L3 = "Loading...";
+//    if( loading.innerHTML == L1 ) loading.innerHTML = L2;
+//    else if( loading.innerHTML == L2 ) loading.innerHTML = L3;
+//    else loading.innerHTML = L1;
   })();
 
 
@@ -125,11 +131,13 @@ function init() {
   // scene.add( pointLight );
 
   // model
+   
 
   var onProgress = function ( xhr ) {
     if ( xhr.lengthComputable ) {
       var percentComplete = xhr.loaded / xhr.total * 100;
-      console.log( Math.round(percentComplete, 2) + '% completed' );
+      progress = Math.round(percentComplete, 2);//Math.floor( percentComplete );
+      console.log(  progress+ '% completed' );
     }
   };
 
@@ -228,25 +236,34 @@ function update() {
   }
 
   if( Errors.hasNoFace() ) {
-    state = STATE_NO_FACE;
-    xlCamera.azmimuthRate = 10;
-    xlCamera.elevationRate = 0;
-    xlCamera.elevation = 45;
-    // console.log( "state: STATE_NO_FACE" );
+console.log( "no face"+ resetTimer.elapsed() );
+    if( resetTimer.hasElapsed() ) {
+console.log( "no face, has elapsed" );
+      state = STATE_NO_FACE;
+      xlCamera.azmimuthRate = 10;
+      xlCamera.elevationRate = 0;
+      xlCamera.elevation = 45;
+      // console.log( "state: STATE_NO_FACE" );
+    }
   }
-  else if( state == STATE_NO_FACE ) {
-    // A face just came into view.
-    stateTimer.setDuration( 6000 );
-    stateTimer.reset();
-    state = STATE_INIT_HEAD;
-    xlCamera.azmimuthRate = 0;
-    xlCamera.elevationRate = 0;
-    // console.log( "state: STATE_INIT_HEAD" );
-  }
-  else if( state == STATE_INIT_HEAD ) {
-    if( stateTimer.hasElapsed() ) {
-      state = STATE_HEAD_CONTROL;
+  else { // has face
+console.log( "face timer reset11" );
+    resetTimer.reset();
+
+    if( state == STATE_NO_FACE ) {
+      // A face just came into view.
+      stateTimer.setDuration( 6000 );
+      stateTimer.reset();
+      state = STATE_INIT_HEAD;
+      xlCamera.azmimuthRate = 0;
+      xlCamera.elevationRate = 0;
+      // console.log( "state: STATE_INIT_HEAD" );
+    }
+    else if( state == STATE_INIT_HEAD ) {
+      if( stateTimer.hasElapsed() ) {
+        state = STATE_HEAD_CONTROL;
       // console.log( "state: STATE_HEAD_CONTROL" );
+      }
     }
   }
   
@@ -376,6 +393,8 @@ function onXLabsUpdate() {
 
     // Azimuth
     var dx = 0;
+    
+
     if( head.x > X_THRESH ) {
       dx = head.x - X_THRESH;
     }
@@ -415,11 +434,16 @@ function onXLabsUpdate() {
 
     xlCamera.elevationRate = elevationRate;
 
+    var e = document.getElementById( "headCircle" );
+    var c = 80;
+    e.setAttribute( "cx", c + dx );
+    e.setAttribute( "cy", c + dy );
 
     // console.log( "azmimuthRate: " + azmimuthRate );
   }
 
 }
 
+xLabs.setToken( "myToken" );
 xLabs.setup( onXLabsReady, onXLabsUpdate );
 
