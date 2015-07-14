@@ -31,7 +31,7 @@ var Check = {
           var help = "Camera image OK";
         }
         else {
-          var help = "Camera image OK: Try gaze-tracking demo @ www.reddit.com";
+          var help = "Camera image OK";
         }
         var button = "Continue";
         Graphics.showMessage( help, button, false );//, "70%" );
