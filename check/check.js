@@ -70,7 +70,7 @@ var Check = {
       //xLabs.setConfig( "system.mode", "off" ); // leave it running
     });
 
-    xLabs.setToken( "4sds34k5d45pn4" );
+    xLabs.setToken( "myToken" );
     xLabs.setup( Check.onXlabsReady, Check.onXlabsState, Check.onXlabsIdPath );
     
     var help = "You need to install xLabs' browser extension to use this page.";
