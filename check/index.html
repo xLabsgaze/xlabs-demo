@@ -1,0 +1,74 @@
+<html>
+ <body>
+
+  <div id="debugContainer" style="display:none; width:80%; margin: 0 auto;">
+    <div id="ideas" style="display:none; text-align:center; width:40%; float:left;">
+     <div class="header"><h3>Ideal setup<h3></div> 
+     <div><img id="env_ok_day" src="env_ok_day.png" style="width:45%"/>&nbsp;<img id="env_ok_night" src="env_ok_night.png" style="width:45%"/></div> 
+     <div class="header"><h3>Problems detected<h3></div> 
+     <div>
+      <ul id="warnings" style="text-align:left;">
+       <li id="face-missing"><p><strong>Face not found</strong><br>Is your hand or hair covering it?</p></li>
+       <li id="face-small"><p><strong>Face too small</strong><br>Sit closer, or increase camera resolution via xLabs menu</p></li>
+       <li id="face-pose"><p><strong>Bad position</strong><br>Adjust the camera so that your face is centred</p></li>
+       <li id="face-dark"><p><strong>Face too dark</strong><br>Change seat position or lighting</p></li>
+       <li id="face-side"><p><strong>Face unevenly illuminated</strong><br>Don't use spotlights or desk lamps. Sit facing windows during the day.</p></li>
+       <li id="face-bright"><p><strong>Face saturated</strong><br>A light source is too bright</p></li>
+       <li id="face-track"><p><strong>Face tracking problem</strong><br>Usually caused by shadows around the eyes</p></li>
+      </ul>
+     </div> 
+    </div>
+    <div id="video" style="display:none; text-align:center; width:60%; float:right;">
+      <!--<img src="/assets/env_ok_day.png" />-->
+      <video id='xLabsPreview' ></video>
+    </div>
+  </div>
+
+  <div id="debug" style="display:none; position: absolute; top: 0; left:0; width:100%; height:100%; z-index:5;  pointer-events:none;" >
+    <svg height="100%" width="100%" style="display:block; position:absolute; top:0; left:0; width:100%; height:100%; z-index:6; pointer-events:none;" >
+     <ellipse id="regionFace" cx="300" cy="300" rx="50" ry="50" stroke-width="9" stroke="#d5d5d5" fill="rgba( 0,0,0,0 )"/>
+     <line id="xtDebug" x1="0" y1="0" x2="0" y2="0" stroke-width="4" stroke="#737373" stroke-dasharray="30,10"/>
+     <line id="ytDebug" x1="0" y1="0" x2="0" y2="0" stroke-width="4" stroke="#737373" stroke-dasharray="30,10"/>
+     <line id="xhDebug" x1="0" y1="0" x2="0" y2="0" stroke-width="6" stroke="#FF0000" />
+     <line id="yhDebug" x1="0" y1="0" x2="0" y2="0" stroke-width="6" stroke="#FF0000" />
+     <line id="xh2Debug" x1="0" y1="0" x2="0" y2="0" stroke-width="50" stroke="#FF0000" />
+     <line id="yh2Debug" x1="0" y1="0" x2="0" y2="0" stroke-width="50" stroke="#FF0000" />
+    </svg>
+  </div>
+
+  <div id="checkMessageButton" style="display:none; position: absolute; top: 40%; left:0%; width:100%; height:10%;" >
+    <p class="message" id="checkMessage" style="display:none; text-align:center; color: #000; background-color: #EEE; border: none; padding:8px; border-radius: 5px; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: bold;font-size: 200%; margin: 20px; z-index:8; ">blah blah</p>
+    <input id="checkButton" type="button" value="xxxx" style="display:none; position:relative; margin: 20px auto; color: #FFFFFF; background-color: #339900; border:none; padding:8px; border-radius: 5px; font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: bold;font-size: 200%; z-index:9; " onmouseover="Graphics.onMouseOver();" onmouseout="Graphics.onMouseOut();" onclick="Check.onMessageButtonClick();"/>
+  </div>
+
+  <script src="../api/xlabs.js"></script>
+  <script src="../useful/timer.js"></script>
+  <script src="../useful/util.js"></script>
+  <script src="../useful/allow_camera.js"></script>
+  <script src="camera.js"></script>
+  <script src="history.js"></script>
+  <script src="errors.js"></script>
+  <script src="graphics.js"></script>
+  <script src="check.js"></script>
+  <script type="text/javascript">
+
+    // add event listeners
+    document.addEventListener( "xLabsApiReady", function() {
+      xLabs.onApiReady();
+    } );
+
+    document.addEventListener( "xLabsApiState", function( event ) {
+      xLabs.onApiState( event.detail );
+    } );
+
+    document.addEventListener( "xLabsApiIdPath", function( event ) {
+      xLabs.onApiIdPath( event.detail );
+    } );
+
+    Check.setup();
+
+  </script>
+
+ </body>
+</html>
+
