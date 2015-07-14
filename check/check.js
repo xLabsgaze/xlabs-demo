@@ -12,6 +12,7 @@ var Check = {
     Graphics.hideMessage();
     Check.hasExtension = true;
     xLabs.setConfig( "system.mode", "learning" );
+    xLabs.setConfig( "browser.canvas.paintLearning", "0" );
   },
   onXlabsState : function() {
     //console.log( "on xLabs state." );
@@ -45,7 +46,8 @@ var Check = {
       window.location = Check.urlParams['next']; // navigate to user degined location
     }
     else if( Check.hasExtension ) {
-      window.location = "http://www.reddit.com"; // navigate to demos
+      // window.location = "http://www.reddit.com"; // navigate to demos
+      window.location = "http://xlabsgaze.com/showcase"
     }
     else {
       window.location = "http://www.xlabsgaze.com/extension"; // navigate to demos
@@ -67,7 +69,8 @@ var Check = {
     Errors.setup();
 
     window.addEventListener( "beforeunload", function() {
-      //xLabs.setConfig( "system.mode", "off" ); // leave it running
+      xLabs.setConfig( "system.mode", "off" );
+      xLabs.setConfig( "browser.canvas.paintLearning", "1" );
     });
 
     xLabs.setToken( "myToken" );
