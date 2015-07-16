@@ -36,7 +36,17 @@ var xLabs = {
   },
 
   setToken : function( token ) {
+    // console.log("setToken() called")
     xLabs.token = token;
+
+    // Send a message to extension content_script so that the token is saved.
+    // Otherwise, when the timer kicks in to do a check for permission, the token
+    // is cached in the content_script yet, and will fail.
+    window.postMessage( {
+      target: "xLabs",
+      token: xLabs.token, // may be null
+      config: null
+    }, "*" );
   },
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
