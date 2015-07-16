@@ -5,17 +5,20 @@ var xLabs = {
   // Variables
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   token : null, // cached locally because it's inconvenient to send every time and for backwards compatibility
+  extensionId : null,
   config : null,
   callbackReady : null,
   callbackState : null,
   callbackIdPath : null,
-  apiReady : false,
+  // apiReady : false,
+
+  XLABS_EXTENSION_ID : "licbccoefgmmbgipcgclfgpbicijnlga",
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Core API
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   isApiReady : function() {
-    return !!xLabs.apiReady;
+    return document.documentElement.getAttribute( 'data-xlabs-extension-ready' ) == "1"
   },
 
   getConfig : function( path ) {
@@ -35,12 +38,32 @@ var xLabs = {
     }, "*" );
   },
 
-  sendToken : function() {
-    window.postMessage( {
-      target: "xLabs",
+  sendToken : function() {    
+    // window.postMessage( {
+    //   target: "xLabs",
+    //   token: xLabs.token, // may be null
+    //   config: null
+    // }, "*" );
+
+    var message = {
+      action: "request-access",
       token: xLabs.token, // may be null
-      config: null
-    }, "*" );
+      extensionId : xLabs.extensionId // may be null
+    }
+
+    // An extension is asking for permission, so presumably it's called from the
+    // content script, so we can send a message directly to the background script.
+    if( xLabs.extensionId ) {
+      chrome.runtime.sendMessage( xLabs.XLABS_EXTENSION_ID, message )
+      console.log( "send message to xlabs background script with extension ID")
+    }
+    // Probably from the website then, let's get the xLabsContent to send the message.
+    else {
+      message.target = "xLabs"
+      window.postMessage( message, "*" )
+      console.log( message )
+      console.log( "posting message to content script.")
+    }
   },
 
   setToken : function( token ) {
@@ -49,6 +72,17 @@ var xLabs = {
 
     xLabs.sendToken()
   },
+
+  // We don't really need the extensionId since it'll be attached to the message
+  // sent to the background script anyway. But I think it looks nice and symetrical
+  // with setToken(). 
+  setExtensionId : function( extensionId ) {
+    // console.log("setToken() called")
+    xLabs.extensionId = extensionId
+
+    xLabs.sendToken()
+  },
+
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // JSON
@@ -244,7 +278,7 @@ var xLabs = {
   // Setup
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   onApiReady : function() {
-    xLabs.apiReady = true;
+    xLabs.sendToken()
     if( xLabs.callbackReady != null ) {
       xLabs.callbackReady();
     }
@@ -274,32 +308,41 @@ var xLabs = {
       return;
     }
 
+    // Check if allowed.
     xLabs.sendToken()
 
     xLabs.callbackReady = callbackReady;
     xLabs.callbackState = callbackState;
     xLabs.callbackIdPath = callbackIdPath;
 
-    if( !!xLabs.apiReady ) {
-      xLabs.callbackReady();
+    // If the API is already setup, then we can call the callback without needing
+    // to listen to the ready event. But since it's meant to be a callback we
+    // shall defer calling the callback in the event loop, which would be the expectation
+    // when registering callbacks.
+    if( xLabs.isApiReady() ) {
+      console.log( "xLabs already ready")
+      setTimeout( function() {
+        xLabs.onApiReady();
+      }, 0 )
     }
+    // Not yet ready, we can wait for the event.
+    else {
+      // add event listeners
+      document.addEventListener( "xLabsApiReady", function() {
+        xLabs.onApiReady();
+      })
+    }
+
+    document.addEventListener( "xLabsApiState", function( event ) {
+      xLabs.onApiState( event.detail );
+    })
+
+    document.addEventListener( "xLabsApiIdPath", function( event ) {
+      xLabs.onApiIdPath( event.detail );
+    })
   }
 
 };
-
-
-// add event listeners
-document.addEventListener( "xLabsApiReady", function() {
-  xLabs.onApiReady();
-} );
-
-document.addEventListener( "xLabsApiState", function( event ) {
-  xLabs.onApiState( event.detail );
-} );
-
-document.addEventListener( "xLabsApiIdPath", function( event ) {
-  xLabs.onApiIdPath( event.detail );
-} );
 
 // Usage: xLabs.setup( myCallbackFnReady, myCallbackFnState );
 
