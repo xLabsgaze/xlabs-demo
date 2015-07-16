@@ -35,18 +35,19 @@ var xLabs = {
     }, "*" );
   },
 
-  setToken : function( token ) {
-    // console.log("setToken() called")
-    xLabs.token = token;
-
-    // Send a message to extension content_script so that the token is saved.
-    // Otherwise, when the timer kicks in to do a check for permission, the token
-    // is cached in the content_script yet, and will fail.
+  sendToken : function() {
     window.postMessage( {
       target: "xLabs",
       token: xLabs.token, // may be null
       config: null
     }, "*" );
+  },
+
+  setToken : function( token ) {
+    // console.log("setToken() called")
+    xLabs.token = token
+
+    xLabs.sendToken()
   },
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,6 +273,8 @@ var xLabs = {
       alert("xLabs chrome extension is not installed");
       return;
     }
+
+    xLabs.sendToken()
 
     xLabs.callbackReady = callbackReady;
     xLabs.callbackState = callbackState;
