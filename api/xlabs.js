@@ -10,6 +10,7 @@ var xLabs = {
   callbackReady : null,
   callbackState : null,
   callbackIdPath : null,
+  requestAccessIdx : 0,
   // apiReady : false,
 
   XLABS_EXTENSION_ID : "licbccoefgmmbgipcgclfgpbicijnlga",
@@ -48,8 +49,12 @@ var xLabs = {
     var message = {
       action: "request-access",
       token: xLabs.token, // may be null
-      extensionId : xLabs.extensionId // may be null
+      extensionId : xLabs.extensionId, // may be null
+      idx : xLabs.requestAccessIdx
     }
+
+    xLabs.requestAccessIdx += 1
+
 
     // An extension is asking for permission, so presumably it's called from the
     // content script, so we can send a message directly to the background script.
