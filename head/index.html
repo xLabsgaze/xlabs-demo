@@ -7,8 +7,11 @@
 http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-permission-locally </p>
   <p style=" color: red">You can run Chrome with --allow-file-access-from-files to allow this, or run a local webserver.</p>
   <h3 id="target" style=" color: red; margin: 0; padding: 0; position: fixed; left: 200; top: 200; font-size:48; " >X</h3>
-  <script type="text/javascript" src="../api/xlabs.js"></script>
+
+  <script src="chrome-extension://emeeadaoegehllidjmmokeaahobondco/xlabs.js"></script>
   <script type="text/javascript">
+
+  console.log( "Demo")
 
   var Demo = {
 
@@ -23,6 +26,9 @@ http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-p
     ready : function() {
       xLabs.setConfig( "system.mode", "head" );
       xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
+      window.addEventListener( "beforeunload", function() {
+          xLabs.setConfig( "system.mode", "off" );
+      });
     }
 
   };
