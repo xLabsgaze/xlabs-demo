@@ -244,8 +244,7 @@ var Guide = {
       Guide.aboutShow();
     }
     else if( state == Guide.STATE_COMFORT ) {
-      xLabs.setToken( "myToken" );
-      xLabs.setup( Guide.onXlabsReady, Guide.onXlabsState );
+      xLabs.setup( Guide.onXlabsReady, Guide.onXlabsState, null, "myToken" );
       Canvas.hide();
       Guide.aboutHide();
     }

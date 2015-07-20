@@ -126,8 +126,7 @@ var xLabsPlayer = {
 
 };
 
-xLabs.setToken( "myToken" );
-xLabs.setup( xLabsPlayer.onApiReady, xLabsPlayer.onApiState );
+xLabs.setup( xLabsPlayer.onApiReady, xLabsPlayer.onApiState, null, "myToken" );
 
 // window.onload = function() {
 //     xLabsPlayer.setup();

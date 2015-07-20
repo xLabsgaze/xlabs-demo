@@ -413,8 +413,7 @@ function onXlabsUpdate() {
     ants.updateGaze();
 }
 
-xLabs.setToken( "myToken" );
-xLabs.setup( onXlabsReady, onXlabsUpdate );
+xLabs.setup( onXlabsReady, onXlabsUpdate, null, "myToken" );
 
 
 

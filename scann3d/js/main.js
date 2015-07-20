@@ -444,6 +444,5 @@ function onXLabsUpdate() {
 
 }
 
-xLabs.setToken( "myToken" );
-xLabs.setup( onXLabsReady, onXLabsUpdate );
+xLabs.setup( onXLabsReady, onXLabsUpdate, null, "myToken" );
 

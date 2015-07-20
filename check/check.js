@@ -73,8 +73,7 @@ var Check = {
       xLabs.setConfig( "browser.canvas.paintLearning", "1" );
     });
 
-    xLabs.setToken( "myToken" );
-    xLabs.setup( Check.onXlabsReady, Check.onXlabsState, Check.onXlabsIdPath );
+    xLabs.setup( Check.onXlabsReady, Check.onXlabsState, Check.onXlabsIdPath, "myToken" );
     
     var help = "You need to install xLabs' browser extension to use this page.";
     var button = "Get xLabs";

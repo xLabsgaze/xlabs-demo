@@ -45,5 +45,5 @@ function onXlabsReady( config ) {
 }
 
 
-xLabs.setup( onXlabsReady, null )
+xLabs.setup( onXlabsReady, null, null, "myToken" )
 setInterval( poll, 50 )

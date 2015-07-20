@@ -356,8 +356,7 @@ function init() {
   })();
 
   // setup xlabs
-  xLabs.setToken( "myToken" );
-  xLabs.setup( onXLabsReady, onXLabsUpdate );
+  xLabs.setup( onXLabsReady, onXLabsUpdate, null, "myToken" );
 }
 
 // function onWindowResize() {
