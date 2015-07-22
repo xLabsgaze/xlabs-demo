@@ -30,9 +30,6 @@ xLabs.webCamController = function(){
     this.pitch = 0;
     this.yaw  = 0;
     this.isFaceDetected = false;
-    // document.addEventListener( "xLabsApiReady", function(){self.onApiReady();});
-    // document.addEventListener( "xLabsApiState", function( event ){self.onApiState(event.detail);});
-    xLabs.setToken( "myToken" );
     xLabs.setup( function(){ self.onApiReady(); }, function(){ self.onApiState(); }, null, "myToken" );
 }
 

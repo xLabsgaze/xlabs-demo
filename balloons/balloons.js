@@ -40,7 +40,7 @@ var Balloons = {
     var nbrCirclesClicked = Graph.getCountCircleClass( "tiny" );
     var fractionClicked = ( nbrCirclesClicked / nbrCircles );
 
-console.log( "frac="+  fractionClicked  );
+    // console.log( "frac="+  fractionClicked  );
     if( fractionClicked > 0.75 ) {
       xLabs.setConfig( "system.mode", "off" );
       document.getElementById( "win" ).style.display = "block";

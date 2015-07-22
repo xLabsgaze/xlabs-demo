@@ -236,9 +236,7 @@ function update() {
   }
 
   if( Errors.hasNoFace() ) {
-console.log( "no face"+ resetTimer.elapsed() );
     if( resetTimer.hasElapsed() ) {
-console.log( "no face, has elapsed" );
       state = STATE_NO_FACE;
       xlCamera.azmimuthRate = 10;
       xlCamera.elevationRate = 0;
@@ -247,7 +245,6 @@ console.log( "no face, has elapsed" );
     }
   }
   else { // has face
-console.log( "face timer reset11" );
     resetTimer.reset();
 
     if( state == STATE_NO_FACE ) {

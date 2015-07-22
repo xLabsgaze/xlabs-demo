@@ -11,15 +11,17 @@ http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-p
   <p id="myLog" style=" color: blue;" >-</p>
   <p id="xLog" style=" color: red;" >-</p>
   <p id="gLog" style=" color: green;" >-</p>
-  <script type="text/javascript" src="../api/xlabs.js"></script>
+  <p id="wLog" style=" color: magenta;" >-</p>
+  <script src="../api/xlabs.js"></script>
   <script type="text/javascript">
 
   var Demo = {
 
     refresh : function() {
       xLabs.setConfig( "click.temp.id", "myLog" ); // ask for the log to be copied to this DOM element
-      xLabs.setConfig( "error.temp.id", "xLog" ); // ask for the log to be copied to this DOM element
-      xLabs.setConfig( "gaze.temp.id", "gLog" ); // ask for the log to be copied to this DOM element
+      // xLabs.setConfig( "error.temp.id", "xLog" ); // ask for the log to be copied to this DOM element
+      // xLabs.setConfig( "gaze.temp.id", "gLog" ); // ask for the log to be copied to this DOM element
+      xLabs.setConfig( "watch.temp.id", "wLog" ); // ask for the log to be copied to this DOM element
     },
 
     idPath : function( id, path ) {
@@ -35,14 +37,18 @@ http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-p
 
     ready : function() {
       xLabs.setConfig( "click.temp.enabled", "1" );
-      xLabs.setConfig( "error.temp.enabled", "1" );
-      xLabs.setConfig( "gaze.temp.enabled", "1" );
+      // xLabs.setConfig( "error.temp.enabled", "1" );
+      // xLabs.setConfig( "gaze.temp.enabled", "1" );
+      xLabs.setConfig( "watch.temp.enabled", "1" );
+
+      //??? AZ just for passive logging.
+      xLabs.setConfig( "system.mode", "learning" );
+      xLabs.setConfig( "browser.canvas.paintLearning", "0" );
     }
 
   };
 
-  xLabs.setToken( "myToken" );
-  xLabs.setup( Demo.ready, Demo.update, Demo.idPath );
+  xLabs.setup( Demo.ready, Demo.update, Demo.idPath, "myToken" );
 
   document.getElementById( "refresh" ).onclick = Demo.refresh;
 
