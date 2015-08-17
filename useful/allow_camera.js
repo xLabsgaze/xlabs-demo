@@ -8,7 +8,7 @@ function AllowCamera() {
     function createArrow() {
         var arrow = document.createElement('div')
         arrow.setAttribute( "name", arrowName )
-        arrow.style.position = "absolute"
+        arrow.style.position = "fixed"
         arrow.style.top = "0"
         arrow.style.width = "10%"
         arrow.style.height = "10%"
@@ -31,7 +31,7 @@ function AllowCamera() {
         var overlay = document.createElement('div')
         overlay.id = overlayId
         overlay.style.display = "block"
-        overlay.style.position = "absolute"
+        overlay.style.position = "fixed"
         overlay.style.top = "0"
         overlay.style.left = "0"
         overlay.style.width = "100%"
@@ -129,31 +129,3 @@ function AllowCamera() {
     return self
 }
 
-
-// <div id="cameraPermission" style="display:none; position: absolute; top: 0; left:0; width:100%; height:100%; z-index:10; pointer-events:none; background-color:white" >
-
-//   <!-- Draw the arrows -->
-//   <div name="cameraPermissionArrow" style="position:absolute; top:0; left:10%; width:10%; height:10%; opacity:0.5">
-//     <svg width="100%" height="100%" viewBox="0 0 100 100">
-//       <polygon points="50,0 100,50 75,50 75,100 25,100 25,50 0,50" style="fill:red;stroke:black;stroke-width:1" />
-//     </svg>
-//   </div>
-//   <div name="cameraPermissionArrow" style="position:absolute; top:0; left:45%; width:10%; height:10%; opacity:0.5">
-//     <svg width="100%" height="100%" viewBox="0 0 100 100">
-//       <polygon points="50,0 100,50 75,50 75,100 25,100 25,50 0,50" style="fill:red;stroke:black;stroke-width:1" />
-//     </svg>
-//   </div>
-//   <div name="cameraPermissionArrow" style="position:absolute; top:0; left:80%; width:10%; height:10%; opacity:0.5">
-//     <svg width="100%" height="100%" viewBox="0 0 100 100">
-//       <polygon points="50,0 100,50 75,50 75,100 25,100 25,50 0,50" style="fill:red;stroke:black;stroke-width:1" />
-//     </svg>
-//   </div>
-//   <!-- /Draw the arrows -->
-
-//   <!-- Message asking for camera permission -->
-//   <div style="position:absolute; top:40%; width:100%; text-align:center">
-//     <h1>Please allow camera access.</h1>
-//   </div>
-//   <!-- /Message asking for camera permission -->
-
-// </div>
