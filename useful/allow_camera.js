@@ -8,7 +8,7 @@ function AllowCamera() {
     function createArrow() {
         var arrow = document.createElement('div')
         arrow.setAttribute( "name", arrowName )
-        arrow.style.position = "absolute"
+        arrow.style.position = "fixed"
         arrow.style.top = "0"
         arrow.style.width = "10%"
         arrow.style.height = "10%"
@@ -31,7 +31,7 @@ function AllowCamera() {
         var overlay = document.createElement('div')
         overlay.id = overlayId
         overlay.style.display = "block"
-        overlay.style.position = "absolute"
+        overlay.style.position = "fixed"
         overlay.style.top = "0"
         overlay.style.left = "0"
         overlay.style.width = "100%"
