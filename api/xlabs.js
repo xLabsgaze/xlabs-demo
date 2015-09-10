@@ -257,6 +257,10 @@ window.xLabs = {
     return document.documentElement.getAttribute('data-xlabs-extension-version');
   },
 
+  hasExtension : function() {
+    return document.documentElement.getAttribute('data-xlabs-extension');
+  },
+
   isExtension : function() {
     return chrome.runtime.getManifest !== undefined
   },
