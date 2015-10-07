@@ -258,7 +258,8 @@ window.xLabs = {
   },
 
   hasExtension : function() {
-    return document.documentElement.getAttribute('data-xlabs-extension');
+    return document.documentElement.getAttribute('data-xlabs-extension') ||
+      document.documentElement.getAttribute('data-xlabs-extension-version') // to be compatible with < 2.5.2
   },
 
   isExtension : function() {
@@ -287,7 +288,7 @@ window.xLabs = {
   },
 
   setup : function( callbackReady, callbackState, callbackIdPath, developerToken ) {
-    if( !xLabs.extensionVersion() ) {
+    if( !xLabs.hasExtension() ) {
       alert("xLabs chrome extension is not installed");
       return;
     }
