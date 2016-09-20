@@ -8,6 +8,7 @@ http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-p
   <p style=" color: red">You can run Chrome with --allow-file-access-from-files to allow this, or run a local webserver.</p>
   <h3 id="target" style=" color: red; margin: 0; padding: 0; position: fixed; left: 200; top: 200; font-size:48; " >X</h3>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script src="../api/xlabs.js"></script>
   <script type="text/javascript">
 
@@ -51,13 +52,23 @@ http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-p
 
   };
 
-//  xLabs.setup( Demo.ready, Demo.update, null, "478r3e278yuu9od" );
-  xLabs = new XLabsApi({
-    extensionId: 'licbccoefgmmbgipcgclfgpbicijnlga',
-    callbackReady: Demo.ready,
-    callbackState: Demo.update,
-    developerToken: '478r3e278yuu9od'
-  });
+  var id = 'licbccoefgmmbgipcgclfgpbicijnlga';
+
+  //  xLabs.setup( Demo.ready, Demo.update, null, "478r3e278yuu9od" );
+
+  if (!XLabsApi.extensionInstalled(id)) {
+      alert('xLabs extension is not installed.');
+  } else {
+
+//  setTimeout(function () {
+      xLabs = new XLabsApi({
+          extensionId: id,
+          callbackReady: Demo.ready,
+          callbackState: Demo.update,
+          developerToken: '478r3e278yuu9od'
+      });
+//  }, 5000);
+  }
 
   </script>
  </body>

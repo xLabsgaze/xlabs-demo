@@ -24,8 +24,9 @@ resetTimer.setDuration( 2500 ); // when person absent 2.5 second, only then rese
 
 var progress = 0;
 
-function paintInit() { 
-  
+function paintInit() {
+    Canvas.setup();
+
   var ctx = Canvas.context;
 
   // paints the initialization cue - a shrinking circle that forces the view to the centre

@@ -14,7 +14,7 @@ function main(){
     }
 
     if(Detector.webgl){
-        visitor = new xLabs.Visitor();
+        visitor = new xLabsGallery.Visitor();
         visitor.init();
         visitor.start();
     }

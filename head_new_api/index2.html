@@ -1,0 +1,76 @@
+<html>
+<body>
+<h1>xLabs Software Developer Kit: Head tracking</h1>
+<p>This page checks for presence of the browser extension and uses head tracking to position an element on screen.</p>
+<p style=" color: red">Troubleshooting: you need to enable "Allow access to file URLs" for the xlabs plugin in the chrome extension settings.</p>
+<p style=" color: red">Note: Webcam access doesn't work from file:// URLs. See:
+    http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-permission-locally </p>
+<p style=" color: red">You can run Chrome with --allow-file-access-from-files to allow this, or run a local webserver.</p>
+<h3 id="target" style=" color: red; margin: 0; padding: 0; position: fixed; left: 200; top: 200; font-size:48; " >X</h3>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="../api/xlabs.js"></script>
+<script type="text/javascript">
+
+    console.log( "Demo");
+
+    var fpsLength = 30;
+    var fpsArray = [];
+    var fps = null;
+    var updateCount = 0;
+
+    setInterval(function () {
+        console.log('updateCount: ' + updateCount + ', fps: ' + fps);
+    }, 3000);
+
+    var Demo = {
+
+        update : function() {
+            var x = xLabs.getConfig( "state.head.x" );
+            var y = xLabs.getConfig( "state.head.y" );
+            var targetElement = document.getElementById( "target" );
+            targetElement.style.left = ( screen.width  * 0.5 ) - ( x * 300 );
+            targetElement.style.top  = ( screen.height * 0.5 ) + ( y * 300 );
+            fpsArray.push(Date.now());
+            while (fpsArray.length > fpsLength) {
+                fpsArray.shift();
+            }
+
+            if (fpsArray.length == fpsLength) {
+                fps = (fpsArray.length - 1) / (fpsArray[fpsArray.length-1] - fpsArray[0]) * 1000;
+            }
+            ++updateCount;
+        },
+
+        ready : function() {
+            xLabs.setConfig( "system.mode", "head" );
+            xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
+            window.addEventListener( "beforeunload", function() {
+                xLabs.setConfig( "system.mode", "off" );
+            });
+        }
+
+    };
+
+    var id = 'baaacjkmdbookpfdcbpbcmbjafhfbgng';
+
+    //  xLabs.setup( Demo.ready, Demo.update, null, "478r3e278yuu9od" );
+
+    if (!XLabsApi.extensionInstalled(id)) {
+        alert('xLabs extension is not installed.');
+    } else {
+
+//  setTimeout(function () {
+        xLabs = new XLabsApi({
+            extensionId: id,
+            callbackReady: Demo.ready,
+            callbackState: Demo.update,
+            developerToken: '478r3e278yuu9od'
+        });
+//  }, 5000);
+    }
+
+</script>
+</body>
+</html>
+

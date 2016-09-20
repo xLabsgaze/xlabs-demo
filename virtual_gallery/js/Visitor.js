@@ -2,7 +2,7 @@
  * @author Yikai Gong
  */
 
-var xLabs = xLabs || {};
+var xLabsGallery = xLabsGallery || {};
 var normal = new THREE.Vector3();
 var binormal = new THREE.Vector3();
 
@@ -14,7 +14,7 @@ var maxPitchAccDeg = 0.02;
 var maxPitchDeg =  45;
 var minPitchDeg = -45;
 
-xLabs.Visitor = function(){
+xLabsGallery.Visitor = function(){
 
 	// var
     this.startMov = false;
@@ -43,7 +43,7 @@ xLabs.Visitor = function(){
 	this.lastPitchChangeMsec = new Date().getTime();
 }
 
-xLabs.Visitor.prototype = {
+xLabsGallery.Visitor.prototype = {
     init : function(){
         this.container = document.getElementById('container');
         this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -60,8 +60,8 @@ xLabs.Visitor.prototype = {
         this.initGround();
         this.initSky();
         this.initLight();
-        this.loadObject('assets/models/HosierLane/xLabs model.obj', 'assets/models/HosierLane/xLabs model.mtl'); //'assets/models/HosierLane/xLabs model.mtl'
-//        this.loadObject('assets/models/HosierLane/xLabs model.obj', null);
+        this.loadObject('assets/models/HosierLane/xLabs model.obj', 'assets/models/HosierLane/xLabs model.mtl'); //'assets/models/HosierLane/xLabsGallery model.mtl'
+//        this.loadObject('assets/models/HosierLane/xLabsGallery model.obj', null);
         this.initTrack();
 		
 		keyBoardControler.chase = true;
@@ -173,7 +173,7 @@ xLabs.Visitor.prototype = {
         this.scene.add(this.sky);
     },
     initXLabsController : function(){
-        this.xLabsController = new xLabs.webCamController();
+        this.xLabsController = new xLabsGallery.webCamController();
     },
     loadObject : function(obj_path, mtll_path){
         var self = this;
@@ -296,13 +296,13 @@ xLabs.Visitor.prototype = {
 			
 			var nowMsec = new Date().getTime();
 			if( targetPitchRate != 0 ) {
-				xLabs.Visitor.lastPitchChangeMsec = nowMsec;
+				xLabsGallery.Visitor.lastPitchChangeMsec = nowMsec;
 			}
 			
 //			console.log( nowMsec );
-//			console.log( xLabs.Visitor.lastPitchChangeMsec );
+//			console.log( xLabsGallery.Visitor.lastPitchChangeMsec );
 //			console.log( pitchResetMsec );
-			if( nowMsec - xLabs.Visitor.lastPitchChangeMsec > pitchResetMsec ) {
+			if( nowMsec - xLabsGallery.Visitor.lastPitchChangeMsec > pitchResetMsec ) {
 				var step = 0.1;
                 if( customRotationUp >  step ) customRotationUp -= step;
                 if( customRotationUp < -step ) customRotationUp += step;
@@ -322,9 +322,9 @@ xLabs.Visitor.prototype = {
         this.gui = new dat.GUI();
         this.modeSelection =
         {
-            a: function() {xLabs.mode=xLabs.webCamController.CONTROL_MODE_ROLL;},
-            b: function() {xLabs.mode=xLabs.webCamController.CONTROL_MODE_YAW;},
-            c: function() {xLabs.mode=xLabs.webCamController.CONTROL_MODE_X;},
+            a: function() {xLabsGallery.mode=xLabsGallery.webCamController.CONTROL_MODE_ROLL;},
+            b: function() {xLabsGallery.mode=xLabsGallery.webCamController.CONTROL_MODE_YAW;},
+            c: function() {xLabsGallery.mode=xLabsGallery.webCamController.CONTROL_MODE_X;},
             pitch: false,
             autoRotation: false
         };

@@ -21,14 +21,21 @@ var Canvas = {
 
   resize : function() {
     var devicePixelRatio = xLabs.devicePixelRatio();
-    if( !devicePixelRatio && xLabs.extensionVersion() ) {
+
+      var width  = (window.innerWidth +0) * devicePixelRatio;
+      var height = (window.innerHeight+0) * devicePixelRatio;
+
+      console.log(width);
+
+    if( !width || !height ) {
       console.log( 'xLabs.devicePixelRatio() not ready, will check again' );
       setTimeout( Canvas.resize, 100 ); // check again till it's valid
       return;
     }
+
     //console.log( "Resizing overlay canvas" );
-    Canvas.element.width  = (window.innerWidth +0) * devicePixelRatio;
-    Canvas.element.height = (window.innerHeight+0) * devicePixelRatio;
+    Canvas.element.width  = width;
+    Canvas.element.height = height;
     Canvas.element.style.width  = window.innerWidth +0 + "px";
     Canvas.element.style.height = window.innerHeight+0 + "px";
   },
@@ -135,5 +142,5 @@ var Canvas = {
 
 };
 
-Canvas.setup();
+// Canvas.setup();
 

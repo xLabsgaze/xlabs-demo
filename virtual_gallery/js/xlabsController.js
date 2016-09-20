@@ -19,9 +19,9 @@ var pitchSignalsMaxLength = 50; // the length of the face y position buffer, the
 var pitchSignalLockoutMsec = 1500; // amount of time to ignore other pitch events after a pitch even have occured
 var pitchNumUpdates = 30; // controls the amount of pitch per pitch event, larger means more pitch movement
  
-var xLabs= xLabs || {};
-xLabs.mode = 2;   //0:roll, 1:yaw, 2:positionX
-xLabs.webCamController = function(){
+var xLabsGallery = xLabsGallery || {};
+xLabsGallery.mode = 2;   //0:roll, 1:yaw, 2:positionX
+xLabsGallery.webCamController = function(){
     var self = this;
     this.headX = 0;
     this.headX = 0;
@@ -30,10 +30,10 @@ xLabs.webCamController = function(){
     this.pitch = 0;
     this.yaw  = 0;
     this.isFaceDetected = false;
-    xLabs.setup( function(){ self.onApiReady(); }, function(){ self.onApiState(); }, null, "myToken" );
+    xLabs.setup( function(){ self.onApiReady(); }, function(){ self.onApiState(); }, null, "alan@xlabs.com.au" );
 }
 
-xLabs.webCamController.prototype = {
+xLabsGallery.webCamController.prototype = {
 
 	// variables
 	yawSmooth : 0,
@@ -133,10 +133,10 @@ xLabs.webCamController.prototype = {
 		// 0 -- yaw
 		// 0 -- head x
         var yawRate = 0;
-        if(xLabs.mode===this.CONTROL_MODE_ROLL) {
+        if(xLabsGallery.mode===this.CONTROL_MODE_ROLL) {
 //            yawRate = mapIntoW(this.roll, 0.17, 5);
 		}
-        else if(xLabs.mode===this.CONTROL_MODE_YAW) {
+        else if(xLabsGallery.mode===this.CONTROL_MODE_YAW) {
 			var alpha = 0.9;
 			this.yawSmooth = this.yawSmooth * alpha + (1-alpha) * this.yaw;
 			var gain = 16;
@@ -145,7 +145,7 @@ xLabs.webCamController.prototype = {
 			//console.log( "this.yawSmooth: " + this.yawSmooth );
             yawRate = mapIntoW( this.yawSmooth, gain, yawMin, yawMax );
 		}
-        else if(xLabs.mode===this.CONTROL_MODE_X) {
+        else if(xLabsGallery.mode===this.CONTROL_MODE_X) {
 			var alpha = 0.5;
 			this.xSmooth = this.xSmooth * alpha + (1-alpha) * this.headX;
 			var gain = 1.0*0.75;
