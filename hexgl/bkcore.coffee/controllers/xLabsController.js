@@ -24,12 +24,18 @@ xLabsController = {
         if( !xLabsController.setupDone ) {
             console.log( "xLabsController.setup()" )
             xLabsController.setupDone = true;
-            if( !xLabs.extensionVersion() ) {
-                document.getElementById("extension-check").style.display = "block";
-            }
-            else {
-                xLabs.setup( xLabsController.onReady, xLabsController.onUpdate, null, "myToken" );
-            }
+            // if( !xLabs.extensionVersion() ) {
+            //     document.getElementById("extension-check").style.display = "block";
+            // }
+            // else {
+                // xLabs.setup( xLabsController.onReady, xLabsController.onUpdate, null, "alan@xlabs.com.au" );
+                xLabs = new XLabsApi({
+                    extensionId: 'licbccoefgmmbgipcgclfgpbicijnlga',
+                    callbackReady: xLabsController.onReady,
+                    callbackState: xLabsController.onUpdate,
+                    developerToken: 'alan@xlabs.com.au'
+                });
+            // }
         }
     },
     close : function() {

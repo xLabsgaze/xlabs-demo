@@ -8,22 +8,25 @@
     <link rel="stylesheet" id="divi-style-css" href="//xlabsgaze.com/wp-content/themes/Divi-child/style.css?ver=1.0.0" type="text/css" media="all">
 </head>
 <body> 
-    <script>
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-            (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date(); a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    <!--<script>-->
+    <!--(function (i, s, o, g, r, a, m) {-->
+            <!--(i[r].q = i[r].q || []).push(arguments)-->
+    <!--i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {-->
+    <!--}, i[r].l = 1 * new Date(); a = s.createElement(o),-->
+        <!--m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)-->
+    <!--})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');-->
 
-    ga('create', 'UA-53017531-1', 'auto');
-    ga('send', 'pageview');
+    <!--ga('create', 'UA-53017531-1', 'auto');-->
+    <!--ga('send', 'pageview');-->
 
-    </script>
-  <h1>xLabs: Gaze Tracking Passive Calibration Demo "Ants"</h1>
+    <!--</script>-->
+  <h1>11xLabs: Gaze Tracking Passive Calibration Demo "Ants"</h1>
   <p>Click on the Ants. And keep clicking on them!</p>
   <p>After a while, you'll see a magic laser beam that will kill them automatically. But keep clicking on the ants.</p>
-  <script src="../api/xlabs.js"></script>
+    <!--<script src="../api/utils.js"></script>-->
+    <!--<script src="../api/window_connection.js"></script>-->
+  <!--<script src="../api/xlabs.js"></script>-->
+    <script src="../api/xlabs_dist.js"></script>
   <script type="text/javascript" src="../useful/util.js"></script>
   <script type="text/javascript" src="../useful/state.js"></script>
   <script type="text/javascript" src="../useful/timer.js"></script>
@@ -32,6 +35,6 @@
   <script type="text/javascript" src="../useful/mouse.js"></script>
   <script type="text/javascript" src="../useful/gaze.js"></script>
   <script type="text/javascript" src="../useful/head.js"></script>
-  <script type="text/javascript" src="ants.js"></script>
+  <script type="text/javascript" src="./ants.js"></script>
 </body>
 </html>

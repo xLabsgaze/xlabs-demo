@@ -253,6 +253,10 @@ XLabsAnts.prototype.onClick = function( e ) {
     if( xLabs.documentOffsetReady() ) {
         this.squishAt( xLabs.scr2docX(e.screenX), xLabs.scr2docY(e.screenY), this.clickCatchment );
     }
+
+    var now = Date.now();
+    xLabs.addCalibrationTruth(now - 1, now, e.screenX, e.screenY);
+    console.log('Adding calibration truth.');
 }
 
 XLabsAnts.prototype.squishAt = function( x, y, catchment ) {
@@ -388,32 +392,59 @@ XLabsAnts.ant.prototype.render = function( xLabsAnts ) {
 // -------------------------------------------------------------------------
 
 function onXlabsReady() {
-    window.addEventListener( "beforeunload", function() {
-        xLabs.setConfig( "system.mode", "off" );
+    // Canvas.setup();
+    // console.log('Canvas.setup() called');
+    console.log('onXlabsReady called');
+
+    window.addEventListener("beforeunload", function () {
+        xLabs.setConfig("system.mode", "off");
     });
 
-    xLabs.setConfig( "calibration.clear", "1" ); // this also clears the memory buffer
-    xLabs.setConfig( "system.mode", "learning" );
-    xLabs.setConfig( "browser.canvas.paintLearning", "0" );
+    xLabs.setConfig("calibration.clear", "1"); // this also clears the memory buffer
+    // xLabs.setConfig( "system.mode", "learning" );
+    xLabs.setConfig('system.mode', 'training');
+    // xLabs.setConfig( "browser.canvas.paintLearning", "0" );
 
     ants = new XLabsAnts();
-    ants.init( function() {
-        document.addEventListener( "click", function(e) { ants.onClick(e); } );
+    ants.init(function () {
+        document.addEventListener("click", function (e) {
+            ants.onClick(e);
+        });
         // document.addEventListener( "mousemove", function(e) {
         //     if( xLabs.documentOffsetReady() ) {
-        //         ants.mouseX = xLabs.scr2docX(e.screenX)
+        //         anxLabsApits.mouseX = xLabs.scr2docX(e.screenX)
         //         ants.mouseY = xLabs.scr2docY(e.screenY)
         //     }
         // });
         ants.mainLoop();
     });
+
+
+    setInterval(function () {
+        xLabs.calibrate();
+        console.log('Requesting calibration.');
+    }, 5000);
 }
 
 function onXlabsUpdate() {
     ants.updateGaze();
 }
 
-xLabs.setup( onXlabsReady, onXlabsUpdate, null, "myToken" );
+if (XLabsApi) {
+    // setTimeout(function () {
+        xLabs = new XLabsApi({
+            extensionId: 'licbccoefgmmbgipcgclfgpbicijnlga',
+            callbackReady: onXlabsReady,
+            callbackState: onXlabsUpdate,
+            developerToken: 'alan@xlabs.com.au',
+            iframe: true
+        });
+        console.log('new xLabs.setup called');
+    // }, 3000);
+} else {
+    xLabs.setup( onXlabsReady, onXlabsUpdate, null, "alan@xlabs.com.au" );
+    console.log('old xLabs.setup called');
+}
 
 
 

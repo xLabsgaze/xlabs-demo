@@ -1,0 +1,1 @@
+../../xlabs/extension/common/js/window_connection.js

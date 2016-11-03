@@ -1,128 +1,28 @@
 
-// Bring both variable into current scope.
-var XLabsApi = null;
-var xLabs = null; // Legacy support
-
 (function () {
     var EXTENSION_LIST_ATTR = 'data-xlabs-extension-list';
 
-    // Load old API to talk to old extensions.
-    if (document.documentElement.getAttribute(EXTENSION_LIST_ATTR)) {
-        XLabsApiImpl();
-    } else {
-        legacy();
-    }
+    // function inIframe() {
+    //     try {
+    //         return window.self !== window.top;
+    //     } catch (e) {
+    //         return true;
+    //     }
+    // }
 
     function XLabsApiImpl() {
-        var MSG_NAME = 'xlabs';
-        var MSG_CONTENT_SCRIPT = 'content-script';
-        var MSG_PAGE = 'page';
-
         var TYPE_STATE = 'state';
         var TYPE_ID_PATH = 'id-path';
-        var TYPE_READY = 'ready';
-        var TYPE_IS_READY = 'is-ready';
+        var TYPE_CS_READY = 'cs-ready';
+        var TYPE_IF_CS_READY = 'if-cs-ready';
+        var TYPE_CONFIG = 'config';
+        var TYPE_REQUEST_ACCESS = 'request-access';
 
-
-        function customErrorClass(className) {
-
-            var customError = function (message, customProperty) {
-                var error = Error.call(this, message);
-                this.name = className;
-                this.message = error.message;
-                this.stack = error.stack;
-                this.customProperty = customProperty;
-            };
-
-            customError.prototype = Object.create(Error.prototype);
-            customError.prototype.constructor = customError;
-
-            return customError;
-        }
-
-
-        function ContentScriptPort(extensionId) {
-            var _this = this;
-            _this._extensionId = extensionId;
-            _this._listenersMap = {};
-
-            window.addEventListener('message', _this.onEvent.bind(_this));
-        }
-
-        // use the parent window's extension.
-        ContentScriptPort.postMessageUp = function (message, targetDomain, targetWindow) {
-
-            function postMessageImpl(message, targetDomain, targetWindow) {
-                targetWindow.postMessage(message, targetDomain);
-
-                if (targetWindow.parent && targetWindow.parent != targetWindow) {
-                    postMessageImpl(message, targetDomain, targetWindow.parent);
-                }
-            }
-
-            postMessageImpl(message, targetDomain, targetWindow || window);
-        };
-
-
-        ContentScriptPort.prototype.send = function (type, content) {
-            var _this = this;
-            ContentScriptPort.postMessageUp({
-                name: MSG_NAME,
-                to: MSG_CONTENT_SCRIPT,
-                toId: _this._extensionId,
-                type: type,
-                content: content
-            }, '*');
-        };
-
-        ContentScriptPort.prototype.addListener = function (type, listener) {
-            var _this = this;
-
-            var array = _this._listenersMap[type] = _this._listenersMap[type] || [];
-
-            // Don't include duplicates.
-            if (array.every(function (t) { return t != listener; })) {
-                array.push(listener);
-            }
-        };
-
-        ContentScriptPort.prototype.removeListener = function (type, listener) {
-            var _this = this;
-
-            var array = _this._listenersMap[type];
-            if (array) {
-                for (var i = 0; i < array.length; ++i) {
-                    if (array[i] == listener) {
-                        array.splice(i, 1);
-                        break; // Since there should not be any duplicates.
-                    }
-                }
-            }
-        };
-
-        ContentScriptPort.prototype.onEvent = function (event) {
-            var _this = this;
-
-            var data = event.data;
-            if (data.name != MSG_NAME ||
-                data.to != MSG_PAGE
-            ) {
-                console.log('Ignoring message not addressed to me: ', data.name, data.to);
-                return;
-            }
-
-            var array = _this._listenersMap[data.type];
-            if (array) {
-                array.forEach(function (listener) {
-                    listener(data.content);
-                });
-            }
-        };
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         // Core API
         ///////////////////////////////////////////////////////////////////////////////////////////////////
-        XLabsApi = function (options) {
+        function XLabsApi(options) {
             var _this = this;
             _this._extensionInfo = null;
             _this._config = null;
@@ -134,10 +34,47 @@ var xLabs = null; // Legacy support
             _this._csPort = null;
             _this._t1 = 0;
 
+            if (!options.iframe && !XLabsApi.extensionInstalled(options.extensionId)) {
+                throw new XLabsApi.NoExtensionError('The extension with id: ' + options.extensionId +
+                    ' is not installed or version is < ' + XLabsApi.supportedVersion() );
+            }
+
+
             _this.init(options);
+
+            setInterval(function () {
+                console.log('WindowConnection.connectionEventCnt', WindowConnection.connectionEventCnt);
+                console.log('WindowConnection.portEventCnt', WindowConnection.portEventCnt);
+            }, 3000);
         };
 
-        XLabsApi.NoExtensionError = customErrorClass('NoExtensionError');
+        // XLabsApi.isExtensionSupported = function (extensionId) {
+        //     var list = XLabsApi.getExtensionList();
+        //     for (var i = 0; i < list.length; ++i) {
+        //         if (utils.compareVersions(list[i].version, XLabsApi.supportedVersion()) >= 0) {
+        //             return list[i];
+        //         }
+        //     }
+        //
+        //     return null;
+        // };
+        //
+        // XLabsApi.firstSupportedExtension = function () {
+        //     var list = XLabsApi.getExtensionList();
+        //     for (var i = 0; i < list.length; ++i) {
+        //         if (utils.compareVersions(list[i].version, XLabsApi.supportedVersion()) >= 0) {
+        //             return list[i];
+        //         }
+        //     }
+        //
+        //     return null;
+        // };
+
+        XLabsApi.supportedVersion = function () {
+            return '2.7.0';
+        };
+
+        XLabsApi.NoExtensionError = utils.customErrorClass('NoExtensionError');
 
         XLabsApi.prototype.init = function (options) {
             var _this = this;
@@ -151,6 +88,14 @@ var xLabs = null; // Legacy support
             options.developerToken = options.developerToken || null;
 
             _this.initImpl(options);
+        };
+
+        XLabsApi.prototype.send = function (type, content) {
+            var _this = this;
+            _this._csPort.send({
+                type: type,
+                content: content
+            });
         };
 
         XLabsApi.prototype.initImpl = function (options) {
@@ -171,66 +116,95 @@ var xLabs = null; // Legacy support
             _this._extensionInfo = {};
             _this._extensionInfo.id = options.extensionId;
 
-            _this._csPort = new ContentScriptPort(_this._extensionInfo.id);
-
             _this._callbackReady = options.callbackReady;
             _this._callbackState = options.callbackState;
             _this._callbackIdPath = options.callbackIdPath;
             _this._developerToken = options.developerToken;
 
-            // _this.isApiReady(function (ready) {
-            //     // If the API is already setup, then we can call the callback without needing
-            //     // to listen to the ready event. But since it's meant to be a callback we
-            //     // shall defer calling the callback in the event loop, which would be the expectation
-            //     // when registering callbacks.
-            //     setTimeout(function () {
-            //         _this.onApiReady();
-            //     }, 0);
-            // }
-            // else {
-            //     // Not ready yet, we can wait for the event.
-            //     _this._csPort.addListener('ready', _this.onApiReady.bind(_this));
-            // }
+            function addListeners(port) {
 
-            _this._csPort.addListener(TYPE_STATE, _this.onApiState.bind(_this));
-            _this._csPort.addListener(TYPE_ID_PATH, _this.onApiIdPath.bind(_this));
+                port.addListener(_this.onApiState.bind(_this));
+                port.addListener(_this.onApiIdPath.bind(_this));
 
-            // One time only function. Declare as local to get the same reference when we want to remove it.
-            var onApiReady = function() {
-                _this._csPort.removeListener(TYPE_READY, onApiReady);
-                _this.pageCheck();
-                _this._callbackReady && _this._callbackReady();
+                // One time only function. Declare as local to get the same reference when we want to remove it.
+                var onApiReady = function(body) {
+
+                    console.log('onApiReady', body);
+
+                    if (body.type != TYPE_CS_READY) {
+                        return;
+                    }
+
+                    port.removeListener(onApiReady);
+                    _this.pageCheck();
+                    _this._callbackReady && _this._callbackReady();
+                };
+
+                port.addListener(onApiReady);
+
+                // Ask the content script to send a ready message when it's ready.
+                _this.send(TYPE_IF_CS_READY);
+
+                console.log('Send message to cs: ' + TYPE_IF_CS_READY);
             }
-            _this._csPort.addListener(TYPE_READY, onApiReady);
 
-            // Ask the content script to send a 'ready' message when the API is ready.
-            _this._csPort.send(TYPE_IS_READY);
+            // Connect to the content script server.
+            WindowConnection.connect({
+                remoteWindow: window,
+                remoteName: 'xLabsCsServers.page'
+
+            }, function (port) {
+                console.log(Date.now() - window.startTime);
+
+                _this._csPort = port;
+
+                addListeners(port);
+            });
+
+            // Allow embedding inside <webview>. Setup a server to listen.
+            _this.pageServers = {};
+            _this.pageServers.cs = new WindowConnection('xLabsPageServers.cs');
+            _this.pageServers.cs.onConnect.addListener(function (port) {
+
+                _this._csPort = port;
+
+                console.log('Connected with client', port);
+
+                addListeners(port);
+            });
         };
 
-        function getExtensionList() {
-            return JSON.parse(document.documentElement.getAttribute(EXTENSION_LIST_ATTR) || '{}');
-        }
+        // Returns only the installed extension that are supported by this API.
+        XLabsApi.getExtensionList = function () {
+            var ret = [];
+            var list = JSON.parse(document.documentElement.getAttribute(EXTENSION_LIST_ATTR) || '[]');
+            list.forEach(function (item) {
+                if (utils.compareVersions(item.version, XLabsApi.supportedVersion()) >= 0) {
+                    ret.push(item);
+                }
+            });
+            return ret;
+        };
 
-        XLabsApi.extensionInstalled = function (extensionId) {
-            var list = getExtensionList();
-            return !!list[extensionId];
+        XLabsApi.extensionInstalled = function (extensionIds) {
+            var list = XLabsApi.getExtensionList();
+            for (var i = 0; i < list.length; ++i) {
+                if (extensionIds.some(function (id) {
+                    return list[i].extensionId == id;
+                })) {
+                    return list[i];
+                }
+            }
+            return null;
         };
 
         XLabsApi.isExtension = function () {
             return !!chrome.runtime.getManifest;
         };
 
-        XLabsApi.prototype.isApiReady = function () {
-            var _this = this;
-            var list = JSON.parse(document.documentElement.getAttribute(EXTENSION_LIST_ATTR) || '{}');
-            var t = list[_this._extensionInfo.id];
-            return t || t.ready;
-        };
-
         XLabsApi.prototype.getConfig = function (path) {
             var _this = this;
             var value = getObjectProperty(_this._config, path);
-            //console.log( 'getConfig( '+path+' = '+ value + ' )' );
             return value;
         };
 
@@ -244,7 +218,10 @@ var xLabs = null; // Legacy support
 
         XLabsApi.prototype.setConfig = function (path, value) {
             var _this = this;
-            _this._csPort.send('config', {
+
+            console.log('Sending config message to content script.');
+
+            _this.send(TYPE_CONFIG, {
                 token: _this._developerToken, // may be null
                 path: path,
                 value: value
@@ -444,15 +421,25 @@ var xLabs = null; // Legacy support
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         // Setup
         ///////////////////////////////////////////////////////////////////////////////////////////////////
-        XLabsApi.prototype.onApiState = function (config) {
+        XLabsApi.prototype.onApiState = function (body) {
             var _this = this;
-            _this._config = config;
+
+            if (body.type != TYPE_STATE) {
+                return;
+            }
+
+            _this._config = body.content;
             _this._callbackState && _this._callbackState();
         };
 
-        XLabsApi.prototype.onApiIdPath = function (detail) {
+        XLabsApi.prototype.onApiIdPath = function (body) {
             var _this = this;
-            _this._callbackIdPath && _this._callbackIdPath(detail.id, detail.path);
+
+            if (body.type != TYPE_ID_PATH) {
+                return;
+            }
+
+            _this._callbackIdPath && _this._callbackIdPath(body.content.id, body.content.path);
         };
 
         // Returns the version number of the extension, or null if extension not installed.
@@ -477,67 +464,66 @@ var xLabs = null; // Legacy support
             }
             // From the a website
             else {
-                _this._csPort.send('request-access', content);
-                console.log(content);
-                console.log('sending message to content script.');
+                _this.send(TYPE_REQUEST_ACCESS, content);
             }
         };
 
         // Legacy support
-        function deprecate(f) {
-            var _this = this;
-            return function () {
-                console.warn('This function has been deprecate and will be removed in future releases.');
-                return f.apply(_this, arguments);
-            };
-        }
+        // function deprecate(f) {
+        //     var _this = this;
+        //     return function () {
+        //         console.warn('This function has been deprecate and will be removed in future releases.');
+        //         return f.apply(_this, arguments);
+        //     };
+        // }
+        //
+        // xLabs = {};
+        // xLabs.setup = deprecate(function (callbackReady, callbackState, callbackIdPath, developerToken) {
+        //
+        //     var list = getExtensionList();
+        //
+        //     if (list.length == 0) {
+        //         throw new NoExtensionError('No extension installed.');
+        //     }
+        //
+        //     var extensionId = list[0].extensionId;
+        //
+        //     console.log('Using the first xlabs extension found on the system, id: ' + extensionId);
+        //
+        //     xLabs = new XLabsApi({
+        //         extensionId: extensionId,
+        //         callbackReady: callbackReady,
+        //         callbackState: callbackState,
+        //         callbackIdPath: callbackIdPath,
+        //         developerToken: developerToken
+        //     });
+        //
+        //     // Makesure all the static fucntion are there.
+        //     setupLegacy();
+        // });
+        //
+        // function setupLegacy() {
+        //     xLabs.extensionVersion = deprecate(function () {
+        //         return document.documentElement.getAttribute('data-xlabs-extension-version');
+        //     });
+        //
+        //     xLabs.hasExtension = deprecate(function() {
+        //         return document.documentElement.getAttribute('data-xlabs-extension') ||
+        //             document.documentElement.getAttribute('data-xlabs-extension-version') // to be compatible with < 2.5.2
+        //     });
+        // }
+        //
+        // // Makesure all the static functions are there.
+        // setupLegacy();
 
-        xLabs = {};
-        xLabs.setup = deprecate(function (callbackReady, callbackState, callbackIdPath, developerToken) {
-
-            var list = getExtensionList();
-
-            if (list.length == 0) {
-                throw new NoExtensionError('No extension installed.');
-            }
-
-            var extensionId = Object.keys(list)[0];
-
-            console.log('Using the first xlabs extension found on the system, id: ' + extensionId);
-
-            xLabs = new XLabsApi({
-                extensionId: extensionId,
-                callbackReady: callbackReady,
-                callbackState: callbackState,
-                callbackIdPath: callbackIdPath,
-                developerToken: developerToken
-            });
-
-            // Makesure all the static fucntion are there.
-            setupLegacy();
-        });
-
-        function setupLegacy() {
-            xLabs.extensionVersion = deprecate(function () {
-                return document.documentElement.getAttribute('data-xlabs-extension-version');
-            });
-
-            xLabs.hasExtension = deprecate(function() {
-                return document.documentElement.getAttribute('data-xlabs-extension') ||
-                    document.documentElement.getAttribute('data-xlabs-extension-version') // to be compatible with < 2.5.2
-            });
-        }
-
-        // Makesure all the static functions are there.
-        setupLegacy();
-
+        return XLabsApi;
     }
 
 
 
     function legacy() {
 
-        xLabs = {
+        return {
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
             // Variables
@@ -827,7 +813,7 @@ var xLabs = null; // Legacy support
 
             setup : function( callbackReady, callbackState, callbackIdPath, developerToken ) {
                 if( !xLabs.hasExtension() ) {
-                    alert("xLabs chrome extension is not installed");
+                    console.error("xLabs chrome extension is not installed");
                     return;
                 }
 
@@ -858,15 +844,36 @@ var xLabs = null; // Legacy support
 
                 document.addEventListener( "xLabsApiState", function( event ) {
                     xLabs.onApiState( event.detail );
-                })
+                });
 
                 document.addEventListener( "xLabsApiIdPath", function( event ) {
                     xLabs.onApiIdPath( event.detail );
-                })
+                });
             }
 
         };
     }
+
+    if (typeof module !== 'undefined' && module.exports) {
+        var dst = module.exports = {};
+    } else {
+        var dst = window;
+    }
+
+    // Always expose xLabs.
+    dst.xLabs = legacy();
+
+    // Expose XLabsApi when the version is >= XLabsApi.supportedVersion()
+    // var XLabsApi = XLabsApiImpl();
+    // if (XLabsApi.getExtensionList().some(function (info) {
+    //
+    //     return utils.compareVersions(info.version, XLabsApi.supportedVersion()) >= 0;
+    //
+    // })) {
+
+        dst.XLabsApi = XLabsApiImpl();
+    // }
+
 })();
 
 
