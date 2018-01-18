@@ -34,7 +34,7 @@
             _this._csPort = null;
             _this._t1 = 0;
 
-            if (!options.iframe && !XLabsApi.extensionInstalled(options.extensionId)) {
+            if (!options.skipExtensionCheck && !XLabsApi.extensionInstalled(options.extensionId)) {
                 throw new XLabsApi.NoExtensionError('The extension with id: ' + options.extensionId +
                     ' is not installed or version is < ' + XLabsApi.supportedVersion() );
             }
@@ -199,7 +199,8 @@
         };
 
         XLabsApi.isExtension = function () {
-            return !!chrome.runtime.getManifest;
+            return !!chrome.runtime.getManifest &&
+                !chrome.runtime.getManifest().app // _not_ an app.
         };
 
         XLabsApi.prototype.getConfig = function (path) {
