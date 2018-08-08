@@ -1,0 +1,46 @@
+<html>
+ <body>
+  <h1>xLabs Software Developer Kit: Head tracking</h1>
+  <p>This page checks for presence of the browser extension and uses head tracking to position an element on screen.</p>
+  <p style=" color: red">Troubleshooting: you need to enable "Allow access to file URLs" for the xlabs plugin in the chrome extension settings.</p>
+  <p style=" color: red">Note: Webcam access doesn't work from file:// URLs. See:
+http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-permission-locally </p>
+  <p style=" color: red">You can run Chrome with --allow-file-access-from-files to allow this, or run a local webserver.</p>
+  <pre id="edl-data-head"></pre>
+  <pre id="edl-data-gaze"></pre>
+
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="../api/xlabs.js"></script>
+  <script type="text/javascript">
+
+  console.log( "Demo")
+
+  var Demo = {
+
+    update : function() {
+      var head = xLabs.getConfig( "state.head" );
+      var gaze = xLabs.getConfig( "state.gaze" );
+
+      $('#edl-data-head').html(JSON.stringify(head, null, 2));
+      $('#edl-data-gaze').html(JSON.stringify(gaze, null, 2));
+    },
+
+    ready : function() {
+      xLabs.setConfig( "system.mode", "training" );
+      xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
+      window.addEventListener( "beforeunload", function() {
+          xLabs.setConfig( "system.mode", "off" );
+      });
+    }
+
+  };
+
+  xLabs.setup( Demo.ready, Demo.update, null, "9bb4795f-196a-45cc-8af8-74e61d5cd092" );
+
+  </script>
+ </body>
+</html>
+

@@ -1,0 +1,70 @@
+<html>
+ <body>
+  <h1>xLabs Software Developer Kit: Head tracking</h1>
+  <p>This page checks for presence of the browser extension and uses head tracking to position an element on screen.</p>
+  <p style=" color: red">Troubleshooting: you need to enable "Allow access to file URLs" for the xlabs plugin in the chrome extension settings.</p>
+  <p style=" color: red">Note: Webcam access doesn't work from file:// URLs. See:
+http://stackoverflow.com/questions/13723699/chrome-getusermedia-not-requesting-permission-locally </p>
+  <p style=" color: red">You can run Chrome with --allow-file-access-from-files to allow this, or run a local webserver.</p>
+  <h3 id="target" style=" color: red; margin: 0; padding: 0; position: fixed; left: 200; top: 200; font-size:48; " >X</h3>
+
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+
+  <script src="../api/xlabs.js"></script>
+  <script type="text/javascript">
+
+  console.log( "Demo")
+
+  var Demo = {
+
+    ready : function() {
+      xLabs.setConfig( "system.mode", "training" );
+      xLabs.setConfig( "browser.canvas.paintHeadPose", "0" );
+      window.addEventListener( "beforeunload", function() {
+          xLabs.setConfig( "system.mode", "off" );
+      });
+
+      xLabs.setConfig('watch.temp.enabled', '1');
+
+      // Start from scratch.
+      xLabs.setConfig('watch.temp.clear', '1');
+    },
+
+    refreshData: function () {
+      if (!Demo.$gazeLogs) {
+          Demo.$gazeLogs = $('<div id="edl-recorder-gaze-logs"></div>');
+          Demo.$gazeLogs.css('display', 'none');
+
+          Demo.$gaze = {};
+          Demo.$gaze['watch'] = $('<pre id="edl-recorder-gaze-watch"></pre>');
+
+          Demo.$gazeLogs
+            .append(Demo.$gaze['watch']);
+
+          $('body').append(Demo.$gazeLogs);
+      }
+
+      // ask for the log to be copied to this DOM element, and clear the log
+      xLabs.setConfig('watch.temp.id', 'edl-recorder-gaze-watch,1');
+
+      console.info && console.log('Refreshing watch/truth');
+    },
+
+    onData: function (id, path) {
+        if (path == 'watch.temp.id') {
+            console.log('Raw gaze data: ', Demo.$gaze['watch'].html());
+        }
+    }
+
+  };
+
+  xLabs.setup( Demo.ready, null, Demo.onData, "myToken" );
+  setInterval(Demo.refreshData, 1000);
+
+  </script>
+ </body>
+</html>
+
